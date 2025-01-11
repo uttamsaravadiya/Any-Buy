@@ -29,7 +29,7 @@ export const Carousel = () => {
   }, []);
 
   return (
-    <div className="relative h-[400px] overflow-hidden rounded-lg">
+    <div className="relative h-[400px] overflow-hidden rounded-lg ">
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -42,9 +42,9 @@ export const Carousel = () => {
             alt={slide.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-white">
-            <div className="text-center">
-              <h2 className="text-4xl font-bold mb-4">{slide.title}</h2>
+          <div className="absolute inset-y-0 right-0 flex items-center justify-end bg-opacity-40 text-white">
+            <div className="container auto mx-auto px-6">
+              <h2 className="text-4xl   font-bold mb-4">{slide.title}</h2>
               <p className="text-xl">{slide.description}</p>
             </div>
           </div>

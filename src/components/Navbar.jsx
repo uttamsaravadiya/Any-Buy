@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -6,6 +6,27 @@ import { useAuth } from '../context/AuthContext';
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const timerRef = useRef(null); // To store the timer
+
+  const handleMouseEnter = () => {
+
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setShowProfileMenu(true);
+    }, 300); 
+  };
+
+  const handleMouseLeave = () => {
+
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setShowProfileMenu(false);
+    }, 300); 
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
 
   return (
     <nav className="bg-white shadow-md z-auto">
@@ -37,16 +58,18 @@ const Navbar = () => {
               <ShoppingCart className="h-6 w-6" />
             </Link>
 
-            <div className="ml-4 relative">
-              <button
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="p-2 text-gray-400 hover:text-gray-500"
-              >
+            {/* Profile dropdown */}
+            <div
+              className="ml-4 relative"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="p-2 text-gray-400 hover:text-gray-500">
                 <User className="h-6 w-6" />
               </button>
 
               {showProfileMenu && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-white ring-1  ring-black ring-opacity-5">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-white ring-1 ring-black ring-opacity-5">
                   {user ? (
                     <>
                       <Link
@@ -88,4 +111,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

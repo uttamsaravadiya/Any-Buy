@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
 import axios from 'axios';
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -18,16 +18,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+
   const register = async (userData) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', userData, {
-        withCredentials: true
-      });
-      setUser(data);
+      // Ensure the API URL matches the backend server's URL and port
+      const { data } = await axios.post(
+        'http://localhost:5000/api/auth/register', // Update the URL if necessary
+        userData,
+        {
+          withCredentials: true, // Keep this if you're using cookies for authentication
+          // headers: {
+          //   'Content-Type': 'application/json', // Ensure the correct headers are sent
+          // },
+        }
+      );
+      setUser(data); // Update the user state with the backend response
     } catch (error) {
-      throw error;
+      // Log the error for debugging
+      console.error('Registration failed:', error.response || error.message);
+      throw error; // Re-throw the error for further handling
     }
   };
+  
 
   const logout = () => {
     setUser(null);

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const Carousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   
   const slides = [
     {
-      image: "https://images.unsplash.com/photo-1607082352121-fa243f3c44e7?auto=format&fit=crop&q=80&w=2070",
+      image: "https://images.unsplash.com/photo-1532795986-dbef1643a596?auto=format&fit=crop&q=80&w=2070",
+      // image: "https://images.unsplash.com/photo-1532795986-dbef1643a596?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Special Offer",
       description: "Up to 50% off on Electronics"
     },

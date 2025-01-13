@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     // Clear cookie logic here
+    window.location.href = '/'; // Redirect to home page
   };
 
   return (

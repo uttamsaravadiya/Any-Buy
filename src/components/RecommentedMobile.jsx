@@ -5,34 +5,34 @@ const RecommendedMobile = () => {
   const product = [
     {
       id: 1,
-      image: './src/assets/Mobile 1.avif',
-      title: 'Save up to $900 on Galaxy Tab S10 Ultra',
+      image: './src/assets/Mobile 1.png',
+      title: 'Save ₹6,999 on the POCO – Experience Innovation at an Unbeatable Price!',
     },
     {
       id: 2,
-      image: './src/assets/Mobile 2.avif',
-      title: 'Save up to $900+ on Galaxy Z Flip6',
+      image: './src/assets/Mobile 2.png',
+      title: 'Save ₹5,999 on Vivo X60 – Experience Innovation at an Unbeatable Price!',
     },
     {
       id: 3,
-      image: './src/assets/Mobile 3.avif',
-      title: 'Save up to $350+ on Galaxy Watch Ultra',
+      image: './src/assets/Mobile 3.png',
+      title: 'Save ₹10,999 on the Galaxy Z Fold6 – Experience Innovation at an Unbeatable Price!',
     },
     {
       id: 4,
-      image: './src/assets/Mobile 4.avif',
-      title: 'Save up to $925+',
+      image: './src/assets/Mobile 4.png',
+      title: 'Save ₹11,000 on Nothing Phone 1 – Experience Innovation at an Unbeatable Price!',
     },
     {
       id: 5,
-      image: './src/assets/Mobile 5.avif',
-      title: 'Save $1,200 on Galaxy Z Fold6',
+      image: './src/assets/Mobile 5.png',
+      title: 'Save ₹5,000 on Google Pixel 7 Pro – Experience Innovation at an Unbeatable Price!',
       button: true,
     },
     {
       id: 6,
-      image: './src/assets/Mobile 6.avif',
-      title: 'Save $1,200 on Galaxy Z Fold6',
+      image: './src/assets/Mobile 6.png',
+      title: 'Save ₹10,000 on I Phone 14 – Experience Innovation at an Unbeatable Price!',
       button: true,
     },
   ];
@@ -54,7 +54,7 @@ const RecommendedMobile = () => {
         {product.map((deal) => (
           <div
             key={deal.id}
-            className="relative rounded-lg overflow-hidden bg-gray-100 p-4 flex flex-col items-center"
+            className="relative rounded-lg overflow-hidden bg-gray-100 p-4 flex flex-col items-center duration-700"
             onMouseEnter={() => handleMouseEnter(deal.id)}
             onMouseLeave={handleMouseLeave}
           >
@@ -67,7 +67,7 @@ const RecommendedMobile = () => {
               {deal.title}
             </p>
             {hoverCrad === deal.id && (
-            <button className='bg-black text-white px-2 py-1 text-center rounded-xl transform transition ease-in-out duration-700'>
+            <button className='items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'>
               Buy Now
             </button>
           )}

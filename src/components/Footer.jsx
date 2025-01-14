@@ -6,7 +6,7 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-300 text-black py-8">
+    <footer className="bg-gray-100 text-black py-8 rounded-t-lg">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Information */}
@@ -75,7 +75,7 @@ const Footer = () => {
 
         <div className="mt-8 text-center border-t border-gray-700 pt-4">
           <p className="text-sm">
-            &copy; {new Date().getFullYear()} YourCompany. All rights reserved.
+            &copy; {new Date().getFullYear()} Any-Buy. All rights reserved.
           </p>
         </div>
       </div>

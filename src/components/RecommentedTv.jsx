@@ -54,7 +54,7 @@ const RecommendedTv = () => {
         {product.map((deal) => (
           <div
             key={deal.id}
-            className="relative rounded-lg overflow-hidden bg-gray-200 p-4 flex flex-col items-center"
+            className="relative rounded-lg overflow-hidden bg-gray-100 p-4 flex flex-col items-center"
             onMouseEnter={() => handleMouseEnter(deal.id)}
             onMouseLeave={handleMouseLeave}
           >
@@ -67,7 +67,7 @@ const RecommendedTv = () => {
               {deal.title}
             </p>
             {hoverCrad === deal.id && (
-            <button className='bg-black text-white p-1 text-center rounded-full transform-transition ease-in-out duration-700'>
+            <button className='bg-black text-white px-2 py-1 text-center rounded-xl transform-transition ease-in-out duration-700'>
               Buy Now
             </button>
           )}

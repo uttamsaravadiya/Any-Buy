@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-const RecommendedMobile = () => {
+const RecommendedMobile = ({ addToCart }) => {
   const product = [
     {
       id: 1,
@@ -54,7 +54,7 @@ const RecommendedMobile = () => {
         {product.map((deal) => (
           <div
             key={deal.id}
-            className="relative rounded-lg overflow-hidden bg-gray-100 p-4 flex flex-col items-center duration-700"
+            className="relative rounded-lg h-[300px] overflow-hidden bg-gray-100 p-4 flex flex-col items-center duration-700"
             onMouseEnter={() => handleMouseEnter(deal.id)}
             onMouseLeave={handleMouseLeave}
           >
@@ -67,7 +67,10 @@ const RecommendedMobile = () => {
               {deal.title}
             </p>
             {hoverCrad === deal.id && (
-            <button className='items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'>
+            <button
+              className='items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'
+              onClick={() => addToCart(deal)}
+            >
               Buy Now
             </button>
           )}

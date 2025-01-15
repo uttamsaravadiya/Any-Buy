@@ -1,61 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const Cart = () => {
-  const { user } = useAuth();
-  const [cartItems, setCartItems] = useState([]);
+const Cart = ({ isLoggedIn }) => {
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/users/${user._id}/cart`, {
-          credentials: 'include'
-        });
-        const data = await response.json();
-        setCartItems(data);
-      } catch (error) {
-        console.error('Error fetching cart items:', error);
-      }
-    };
+  const product = [
+    {
+      id: 1,
+      image: './src/assets/Mobile 1.png',
+      title: 'POCO – Experience Innovation at an Unbeatable Price!',
+      price: '49,999',
+    },
+    {
+      id: 2,
+      image: './src/assets/tv 6.png',
+      title: 'Croma Smart TV – Experience Innovation at an Unbeatable Price!',
+      price: "38,499",
+    },
+  ];
+  const navigate = useNavigate();
 
-    if (user) {
-      fetchCartItems();
-    }
-  }, [user]);
+  
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
+  const [text, setText] = useState(1);
+
+  function incrHandler(){
+    setText(text + 1);
+  }
+
+  function decrHandler(){
+    if(text<=1){}
+    else{
+    setText(text - 1)}
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">Shopping Cart</h2>
-      
-      {!user ? (
-        <p>Please login to view your cart</p>
-      ) : cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
-      ) : (
-        <div className="space-y-4">
-          {cartItems.map(item => (
-            <div key={item._id} className="flex items-center justify-between bg-white p-4 rounded-lg shadow">
-              <div className="flex items-center space-x-4">
-                <img
-                  src={`http://localhost:5000/${item.image}`}
-                  alt={item.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div>
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-gray-600">${item.price}</p>
-                </div>
+    <div>
+      <h1 className='flex justify-center mt-6 text-5xl'>Cart</h1>
+      <div className='h-[1px] mt-4 w-[80rem] bg-gray-600 flex m-auto'></div>
+      {!isLoggedIn ? (
+        product.map((deal) => (
+          <div className='flex w-[1290px] mt-8 bg-purple-200 mb-7 rounded-md h-48 items-center justify-between m-auto'>
+              <img src={deal.image} className='h-32 w-32 ml-8 '/>
+              <div className='mr-auto ml-14'>
+                <p className='mb-6 text-lg'>
+                  {deal.title}
+                </p>
+                <p className='text-xl'>
+                  {`₹ `+ deal.price}
+                </p>
               </div>
-            </div>
-          ))}
-          
-          <div className="mt-6">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-              Proceed to Checkout
-            </button>
+
+              <div className='w-28 mr-5'>
+                <div className='bg-white flex justify-center gap-5 py-1 rounded-sm text-[6px] text-[#344151]'>
+                  <button onClick={decrHandler} className='border-r-2 text-center w-8 border-[#bfbfbf] text-xl'>
+                    -
+                  </button>
+                  <div className='font-bold gap-3 text-xl'>{text}</div>
+                  <button onClick={incrHandler} className='border-l-2 text-center w-8 border-[#bfbfbf] text-xl'>
+                    +
+                  </button>
+                </div>
+                <div>
+                  <button className='bg-gray-400 mt-4 h-8 w-[7rem] text-white px-5 rounded-md text-lg'>
+                    Buy Now
+                  </button>
+                  <br/>
+                  <button className='bg-red-400 mt-2 h-8 w-[7rem] text-white px-5  rounded-md text-lg'>
+                    Remove 
+                  </button>
+              </div>
           </div>
+            </div>
+          ))
+      ) : (
+        <div className='flex flex-col justify-center items-center'>
+          <p className='text-3xl mt-28 '>Your cart is empty.</p>
+          <button onClick={handleLogin} className='bg-slate-400  mt-8 h-8 w-[7rem] text-white px-5  rounded-md text-lg'>Login</button>
+          {/* <button onClick={handleSignup}>Sign up</button> */}
         </div>
       )}
+
     </div>
   );
 };

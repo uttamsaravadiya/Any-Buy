@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 
 const Cart = ({ isLoggedIn }) => {
+
+  const { user, logout } = useAuth();
 
   const product = [
     {
@@ -40,7 +44,7 @@ const Cart = ({ isLoggedIn }) => {
     <div>
       <h1 className='flex justify-center mt-6 text-5xl'>Cart</h1>
       <div className='h-[1px] mt-4 w-[80rem] bg-gray-600 flex m-auto'></div>
-      {!isLoggedIn ? (
+      {user ? (
         product.map((deal) => (
           <div className='flex w-[1290px] mt-8 bg-purple-200 mb-7 rounded-md h-48 items-center justify-between m-auto'>
               <img src={deal.image} className='h-32 w-32 ml-8 '/>

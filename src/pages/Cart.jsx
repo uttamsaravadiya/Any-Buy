@@ -42,7 +42,7 @@ const Cart = ({ cart, removeFromCart }) => {
                   {deal.title}
                 </p>
                 <p className='text-xl'>
-                  {`₹ `+ deal.price}
+                  {deal.price}
                 </p>
               </div>
 

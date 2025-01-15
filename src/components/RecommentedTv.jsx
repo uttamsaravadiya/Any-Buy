@@ -1,38 +1,43 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const RecommendedTv = ({ addToCart }) => {
   const product = [
     {
       id: 1,
       image: './src/assets/tv 1.png',
-      title: 'Save ₹10,000 on Coolite LED – Experience Innovation at an Unbeatable Price!',
+      title: ' Coolite LED',
+      price: "₹25000",
     },
     {
       id: 2,
       image: './src/assets/tv 2.png',
-      title: 'Save ₹10,000 on TCL Google TV – Experience Innovation at an Unbeatable Price!',
+      title: ' TCL Google TV ',
+      price: "₹35000",
     },
     {
       id: 3,
       image: './src/assets/tv 3.png',
-      title: 'Save ₹10,000 on INTEX – Experience Innovation at an Unbeatable Price!',
+      title: 'INTEX LED TV',
+      price: "₹15000",
     },
     {
       id: 4,
       image: './src/assets/tv 4.png',
-      title: 'Save ₹10,000 on Samsung Smart TV – Experience Innovation at an Unbeatable Price!',
+      title: ' Samsung Smart TV ',
+      price: "₹45000",
     },
     {
       id: 5,
       image: './src/assets/tv 5.png',
-      title: 'Save ₹10,000 on Samsung Neo QLED – Experience Innovation at an Unbeatable Price!',
+      title: 'Samsung Neo QLED',
+      price: "₹55000",
       button: true,
     },
     {
       id: 6,
       image: './src/assets/tv 6.png',
-      title: 'Save ₹10,000 on Croma Smart TV – Experience Innovation at an Unbeatable Price!',
+      title: 'Croma Smart TV',
+      price: "₹25000",
       button: true,
     },
   ];
@@ -71,7 +76,7 @@ const RecommendedTv = ({ addToCart }) => {
               className='inline-flex  items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'
               onClick={() => addToCart(deal)}
             >
-              Buy Now
+              Add To Cart
             </button>
           )}
           </div>

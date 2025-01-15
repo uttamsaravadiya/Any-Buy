@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { Plus, Search, ShoppingCart, User } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const { user } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const timerRef = useRef(null); // To store the timer
   const navi = useNavigate();
@@ -14,7 +15,7 @@ const Navbar = () => {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setShowProfileMenu(true);
-    }, 300); 
+    }, 300);
   };
 
   const handleMouseLeave = () => {
@@ -106,14 +107,16 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* add prodeuct */}
-
+            {/* add product */}
+            
             <div>
-              {user ? 
-              (<Link to='/add' className="p-2 text-gray-400 hover:text-gray-500">
-                <Plus className="h-6 w-6 ml-6" />
-              </Link>):
-              (<div/>)}
+              {user && (user.userType === 'shopkeeper' || user.userType === 'renowned') ? (
+                <Link to='/add' className="p-2 text-gray-400 hover:text-gray-500">
+                  <Plus className="h-6 w-6 ml-6" />
+                </Link>
+              ) : (
+                <div />
+              )}
             </div>
           </div>
         </div>

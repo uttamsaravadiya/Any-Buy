@@ -1,39 +1,43 @@
-import { config } from 'dotenv';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const RecommendedMobile = ({ addToCart }) => {
   const product = [
     {
       id: 1,
       image: './src/assets/Mobile 1.png',
-      title: 'Save ₹6,999 on the POCO – Experience Innovation at an Unbeatable Price!',
+      title: 'POCO F2',
+      price: "₹25000",
     },
     {
       id: 2,
       image: './src/assets/Mobile 2.png',
-      title: 'Save ₹5,999 on Vivo X60 – Experience Innovation at an Unbeatable Price!',
+      title: ' Vivo X60 Pro',
+      price: "₹28000",
     },
     {
       id: 3,
       image: './src/assets/Mobile 3.png',
-      title: 'Save ₹10,999 on the Galaxy Z Fold6 – Experience Innovation at an Unbeatable Price!',
+      title: ' Galaxy Z Fold6 5G',
+      price: "₹32000",
     },
     {
       id: 4,
       image: './src/assets/Mobile 4.png',
-      title: 'Save ₹11,000 on Nothing Phone 1 – Experience Innovation at an Unbeatable Price!',
+      title: 'Nothing Phone 1',
+      price: "₹35000",
     },
     {
       id: 5,
       image: './src/assets/Mobile 5.png',
-      title: 'Save ₹5,000 on Google Pixel 7 Pro – Experience Innovation at an Unbeatable Price!',
+      title: 'Google Pixel 7 Pro 5G',
+      price: "₹38000",
       button: true,
     },
     {
       id: 6,
       image: './src/assets/Mobile 6.png',
-      title: 'Save ₹10,000 on I Phone 14 – Experience Innovation at an Unbeatable Price!',
+      title: 'I Phone 14 Pro',
+      price: "₹145000",
       button: true,
     },
   ];

@@ -48,6 +48,8 @@ export const register = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       userType: user.userType,
+      phone: user.phone,
+      address: user.address,
     });
     await user.save();
   } catch (error) {
@@ -92,6 +94,8 @@ export const login = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       userType: user.userType,
+      phone: user.phone,
+      address: user.address,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

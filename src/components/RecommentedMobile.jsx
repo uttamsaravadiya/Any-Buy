@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import React from 'react';
 import { useState } from 'react';
 
@@ -47,6 +48,9 @@ const RecommendedMobile = ({ addToCart }) => {
     setHoverCard(null);
   }
 
+  // function sendHandler(){
+  //   console.log(deal)
+  // }
 
   return (
     <div className="h-full w-full mx-auto p-4 rounded-md ">
@@ -71,7 +75,7 @@ const RecommendedMobile = ({ addToCart }) => {
               className='items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'
               onClick={() => addToCart(deal)}
             >
-              Buy Now
+              Add To Cart
             </button>
           )}
           </div>

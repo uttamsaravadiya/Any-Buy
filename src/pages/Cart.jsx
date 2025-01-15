@@ -1,29 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 
-const Cart = ({ isLoggedIn }) => {
+const Cart = ({ cart, removeFromCart }) => {
 
-  const { user, logout } = useAuth();
-
-  const product = [
-    {
-      id: 1,
-      image: './src/assets/Mobile 1.png',
-      title: 'POCO – Experience Innovation at an Unbeatable Price!',
-      price: '49,999',
-    },
-    {
-      id: 2,
-      image: './src/assets/tv 6.png',
-      title: 'Croma Smart TV – Experience Innovation at an Unbeatable Price!',
-      price: "38,499",
-    },
-  ];
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  
   const handleLogin = () => {
     navigate('/login');
   };
@@ -44,8 +27,14 @@ const Cart = ({ isLoggedIn }) => {
     <div>
       <h1 className='flex justify-center mt-6 text-5xl'>Cart</h1>
       <div className='h-[1px] mt-4 w-[80rem] bg-gray-600 flex m-auto'></div>
-      {user ? (
-        product.map((deal) => (
+      {!user ? (
+        cart.length === 0 ? (
+          <>
+          <p className='text-3xl mt-28 text-center'>Your cart is empty.</p>
+          <p className='text-lg mt-4 text-center'>Please Select the product</p>
+          </>
+        ) : 
+        cart.map((deal) => (
           <div className='flex w-[1290px] mt-8 bg-purple-200 mb-7 rounded-md h-48 items-center justify-between m-auto'>
               <img src={deal.image} className='h-32 w-32 ml-8 '/>
               <div className='mr-auto ml-14'>
@@ -72,20 +61,21 @@ const Cart = ({ isLoggedIn }) => {
                     Buy Now
                   </button>
                   <br/>
-                  <button className='bg-red-400 mt-2 h-8 w-[7rem] text-white px-5  rounded-md text-lg'>
+                  <button className='bg-red-400 mt-2 h-8 w-[7rem] text-white px-5  rounded-md text-lg'
+                    onClick={()=> removeFromCart(deal.id)}>
                     Remove 
                   </button>
               </div>
           </div>
             </div>
           ))
-      ) : (
+        ) : (
         <div className='flex flex-col justify-center items-center'>
           <p className='text-3xl mt-28 '>Your cart is empty.</p>
           <button onClick={handleLogin} className='bg-slate-400  mt-8 h-8 w-[7rem] text-white px-5  rounded-md text-lg'>Login</button>
           {/* <button onClick={handleSignup}>Sign up</button> */}
-        </div>
-      )}
+        </div>)
+    }
 
     </div>
   );

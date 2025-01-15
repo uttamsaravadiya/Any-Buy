@@ -5,7 +5,7 @@ import RecommendedMobile from '../components/RecommentedMobile';
 import RecommendedTv from '../components/RecommentedTv';
 import Footer from '../components/Footer';
 
-const Home = () => {
+const Home = ({addToCart}) => {
   const [products, setProducts] = React.useState([]);
 
   React.useEffect(() => {
@@ -29,9 +29,9 @@ const Home = () => {
       
       <section className="mt-12 w-full">
         <h2 className="text-2xl text-center font-bold mb-6">Recommended Mobile</h2>
-        <RecommendedMobile />
+        <RecommendedMobile addToCart={addToCart}/>
         <h2 className="text-2xl text-center font-bold mb-6 p-4">Recommended Tv</h2>
-        <RecommendedTv />
+        <RecommendedTv addToCart={addToCart}/>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map(product => (

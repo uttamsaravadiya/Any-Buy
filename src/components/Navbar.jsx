@@ -31,7 +31,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-white shadow-md z-auto">
+    <nav className="bg-rich-200 shadow-md z-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -46,7 +46,7 @@ const Navbar = () => {
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1  sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-rich-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1  sm:text-sm"
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-gray-400" />
@@ -56,7 +56,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center">
-            <Link to="/cart" className="p-2 text-gray-400 hover:text-gray-500">
+            <Link to="/cart" className="p-2 text-gray-700 hover:text-gray-800">
               <ShoppingCart className="h-6 w-6" />
             </Link>
 
@@ -66,23 +66,23 @@ const Navbar = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <button className="p-2 text-gray-400 hover:text-gray-500">
+              <button className="p-2 text-gray-700 hover:text-gray-800">
                 <User className="h-6 w-6" />
               </button>
 
               {showProfileMenu && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-white ring-1 ring-black ring-opacity-5">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-rich-100 ring-1 ring-black ring-opacity-5">
                   {user ? (
                     <>
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
                       >
                         Profile
                       </Link>
                       <button
                         onClick={logout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
                       >
                         Logout
                       </button>
@@ -91,13 +91,13 @@ const Navbar = () => {
                     <>
                       <Link
                         to="/login"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100 bg-white text-black"
+                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
                       >
                         Login
                       </Link>
                       <Link
                         to="/register"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100 bg-white text-black"
+                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
                       >
                         Register
                       </Link>
@@ -111,7 +111,7 @@ const Navbar = () => {
             
             <div>
               {user && (user.userType === 'shopkeeper' || user.userType === 'renowned') ? (
-                <Link to='/add' className="p-2 text-gray-400 hover:text-gray-500">
+                <Link to='/add' className="p-2 text-gray-700 hover:text-gray-800">
                   <Plus className="h-6 w-6 ml-6" />
                 </Link>
               ) : (

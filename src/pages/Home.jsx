@@ -24,7 +24,7 @@ const Home = ({addToCart}) => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container bg-gray-100 mx-auto px-4 py-8">
       <Carousel />
       
       <section className="mt-12 w-full">

@@ -59,7 +59,7 @@ const RecommendedTv = ({ addToCart }) => {
         {product.map((deal) => (
           <div
             key={deal.id}
-            className="relative rounded-lg h-[300px] overflow-hidden bg-gray-100 p-4 flex flex-col items-center"
+            className="relative rounded-lg h-[300px] overflow-hidden bg-gray-200 p-4 flex flex-col items-center"
             onMouseEnter={() => handleMouseEnter(deal.id)}
             onMouseLeave={handleMouseLeave}
           >
@@ -73,7 +73,7 @@ const RecommendedTv = ({ addToCart }) => {
             </p>
             {hoverCrad === deal.id && (
             <button
-              className='inline-flex  items-center px-4 py-2 my-2 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'
+              className='inline-flex  items-center px-4 py-2 mt-6 text-sm font-medium text-center  text-white ring-2 ring-gray-800 bg-gray-800 rounded-lg hover:bg-white hover:text-black transform transition ease-in-out duration-1000'
               onClick={() => addToCart(deal)}
             >
               Add To Cart

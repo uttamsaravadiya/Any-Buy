@@ -3,38 +3,38 @@ import React, { useState } from 'react';
 const RecommendedMobile = ({ addToCart }) => {
   const product = [
     {
-      id: 1,
+      id: 7,
       image: './src/assets/Mobile 1.png',
       title: 'POCO F2',
       price: "₹25000",
     },
     {
-      id: 2,
+      id: 8,
       image: './src/assets/Mobile 2.png',
       title: ' Vivo X60 Pro',
       price: "₹28000",
     },
     {
-      id: 3,
+      id: 9,
       image: './src/assets/Mobile 3.png',
       title: ' Galaxy Z Fold6 5G',
       price: "₹32000",
     },
     {
-      id: 4,
+      id: 10,
       image: './src/assets/Mobile 4.png',
       title: 'Nothing Phone 1',
       price: "₹35000",
     },
     {
-      id: 5,
+      id: 11,
       image: './src/assets/Mobile 5.png',
       title: 'Google Pixel 7 Pro 5G',
       price: "₹38000",
       button: true,
     },
     {
-      id: 6,
+      id: 12,
       image: './src/assets/Mobile 6.png',
       title: 'I Phone 14 Pro',
       price: "₹145000",

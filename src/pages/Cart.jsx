@@ -2,26 +2,33 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-
 const Cart = ({ cart, removeFromCart }) => {
-
   const { user } = useAuth();
   const navigate = useNavigate();
   const handleLogin = () => {
     navigate('/login');
   };
 
-  const [text, setText] = useState(1);
+  const [quantities, setQuantities] = useState(
+    cart.reduce((acc, deal) => {
+      acc[deal.id] = 1;
+      return acc;
+    }, {})
+  );
 
-  function incrHandler(){
-    setText(text + 1);
-  }
+  const incrHandler = (id) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: prevQuantities[id] + 1,
+    }));
+  };
 
-  function decrHandler(){
-    if(text<=1){}
-    else{
-    setText(text - 1)}
-  }
+  const decrHandler = (id) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: prevQuantities[id] > 1 ? prevQuantities[id] - 1 : 1,
+    }));
+  };
 
   return (
     <div>
@@ -30,29 +37,25 @@ const Cart = ({ cart, removeFromCart }) => {
       {user ? (
         cart.length === 0 ? (
           <>
-          <p className='text-3xl mt-28 text-center'>Your cart is empty.</p>
-          <p className='text-lg mt-4 text-center'>Please Select the product</p>
+            <p className='text-3xl mt-28 text-center'>Your cart is empty.</p>
+            <p className='text-lg mt-4 text-center'>Please Select the product</p>
           </>
-        ) : 
-        cart.map((deal) => (
-          <div className='flex w-[1290px] mt-8 bg-rich-300 mb-7 rounded-md h-48 items-center justify-between m-auto'>
-              <img src={deal.image} className='h-32 w-32 ml-8 '/>
+        ) : (
+          cart.map((deal) => (
+            <div key={deal.id} className='flex w-[1290px] mt-8 bg-rich-200 mb-7 rounded-md h-48 items-center justify-between m-auto'>
+              <img src={deal.image} className='h-32 w-32 ml-8 ' />
               <div className='mr-auto ml-14'>
-                <p className='mb-6 text-xl font-bold'>
-                  {deal.title}
-                </p>
-                <p className='text-xl font-medium'>
-                  {deal.price}
-                </p>
+                <p className='mb-6 text-xl font-bold'>{deal.title}</p>
+                <p className='text-xl font-medium'>{deal.price}</p>
               </div>
 
               <div className='w-28 mr-5'>
                 <div className='bg-rich-100 flex justify-center gap-5 py-1 rounded-sm text-[6px] text-[#344151]'>
-                  <button onClick={decrHandler} className='border-r-2 text-center w-8 border-rich-400 text-xl'>
+                  <button onClick={() => decrHandler(deal.id)} className='border-r-2 text-center w-8 border-rich-400 text-xl'>
                     -
                   </button>
-                  <div className='font-bold gap-3 text-xl'>{text}</div>
-                  <button onClick={incrHandler} className='border-l-2 text-center w-8 border-rich-400 text-xl'>
+                  <div className='font-bold gap-3 text-xl'>{quantities[deal.id]}</div>
+                  <button onClick={() => incrHandler(deal.id)} className='border-l-2 text-center w-8 border-rich-400 text-xl'>
                     +
                   </button>
                 </div>
@@ -60,23 +63,23 @@ const Cart = ({ cart, removeFromCart }) => {
                   <button className='bg-rich-500 mt-4 h-8 w-[7rem] text-white px-5 rounded-md text-lg'>
                     Buy Now
                   </button>
-                  <br/>
-                  <button className='bg-red-400 mt-2 h-8 w-[7rem] text-white px-5  rounded-md text-lg'
-                    onClick={()=> removeFromCart(deal.id)}>
-                    Remove 
+                  <br />
+                  <button className='bg-red-400 mt-2 h-8 w-[7rem] text-white px-5 rounded-md text-lg' onClick={() => removeFromCart(deal.id)}>
+                    Remove
                   </button>
+                </div>
               </div>
-          </div>
             </div>
           ))
-        ) : (
+        )
+      ) : (
         <div className='flex flex-col justify-center items-center'>
           <p className='text-3xl mt-28 '>Your cart is empty.</p>
-          <button onClick={handleLogin} className='bg-slate-400  mt-8 h-8 w-[7rem] text-white px-5  rounded-md text-lg'>Login</button>
-          {/* <button onClick={handleSignup}>Sign up</button> */}
-        </div>)
-    }
-
+          <button onClick={handleLogin} className='bg-slate-400 mt-8 h-8 w-[7rem] text-white px-5 rounded-md text-lg'>
+            Login
+          </button>
+        </div>
+      )}
     </div>
   );
 };

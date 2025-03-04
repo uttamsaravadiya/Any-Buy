@@ -51,22 +51,29 @@ exports.getAllProducts = async (req, res) => {
 
     let filter = {};
     if (category) {
-      filter.category = category; // Filter by category if provided
+      filter.category = category;
     }
 
     const products = await Product.find(filter)
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
 
-    const totalProducts = await Product.countDocuments(filter);
+    console.log("Fetched Products:", products); // Debugging
+
+    if (!products.length) {
+      return res.status(404).json({ message: "No products found" });
+    }
 
     res.json({
-      totalProducts,
-      totalPages: Math.ceil(totalProducts / parseInt(limit)),
+      totalProducts: await Product.countDocuments(filter),
+      totalPages: Math.ceil(products.length / parseInt(limit)),
       currentPage: parseInt(page),
       products,
     });
   } catch (error) {
+    console.error("Error fetching products:", error);
     res.status(500).json({ message: error.message });
   }
 };
+
+

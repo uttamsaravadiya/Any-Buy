@@ -7,7 +7,7 @@ const connectDB = require("./config/db.js");
 const authRoutes = require("./routes/authRoutes.js");
 const productRoutes = require("./routes/productRoutes.js");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 
@@ -15,7 +15,7 @@ const app = express();
 connectDB();
 
 //Connect to Frontend
-const FRONTEND_URL = "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // Middleware
 app.use(

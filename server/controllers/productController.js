@@ -1,65 +1,71 @@
-const Product = require("../models/Product.js");
-const User = require("../models/User.js");
+const Product = require("../models/Product");
 
+// @desc Create a new product
+// @route POST /api/products
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, discount, description, color, category, condition } = req.body;
-    const image = req.file.path;
+    const { name, price, description, color, condition, category, rating } =
+      req.body;
 
-    const product = await Product.create({
+    if (!req.file) {
+      return res.status(400).json({ message: "Product image is required" });
+    }
+
+    const product = new Product({
       name,
       price,
-      discount,
       description,
       color,
-      image,
-      category,
+      image: req.file.path, // Store image path
       condition,
-      seller: req.user._id
+      category,
+      rating: rating || 0, // Default to 0 if not provided
     });
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: { products: product._id }
+    await product.save();
+    res.status(201).json({ message: "Product created successfully", product });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc Get a single product by ID
+// @route GET /api/products/:id
+exports.getProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc Get all products with pagination and filtering
+// @route GET /api/products
+exports.getAllProducts = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category } = req.query;
+
+    let filter = {};
+    if (category) {
+      filter.category = category; // Filter by category if provided
+    }
+
+    const products = await Product.find(filter)
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+    const totalProducts = await Product.countDocuments(filter);
+
+    res.json({
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / parseInt(limit)),
+      currentPage: parseInt(page),
+      products,
     });
-
-    res.status(201).json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getProducts = async (req, res) => {
-  try {
-    const products = await Product.find()
-      .populate('seller', 'fullName')
-      .sort('-createdAt');
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.addToCart = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { $addToSet: { cart: req.params.productId } },
-      { new: true }
-    ).populate('cart');
-    res.json(user.cart);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.addToWishlist = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { $addToSet: { wishlist: req.params.productId } },
-      { new: true }
-    ).populate('wishlist');
-    res.json(user.wishlist);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

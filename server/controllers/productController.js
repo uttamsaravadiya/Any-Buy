@@ -1,7 +1,7 @@
-import Product from '../models/Product.js';
-import User from '../models/User.js';
+const Product = require("../models/Product.js");
+const User = require("../models/User.js");
 
-export const createProduct = async (req, res) => {
+exports.createProduct = async (req, res) => {
   try {
     const { name, price, discount, description, color, category, condition } = req.body;
     const image = req.file.path;
@@ -28,7 +28,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
-export const getProducts = async (req, res) => {
+exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find()
       .populate('seller', 'fullName')
@@ -39,7 +39,7 @@ export const getProducts = async (req, res) => {
   }
 };
 
-export const addToCart = async (req, res) => {
+exports.addToCart = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.user._id,
@@ -52,7 +52,7 @@ export const addToCart = async (req, res) => {
   }
 };
 
-export const addToWishlist = async (req, res) => {
+exports.addToWishlist = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.user._id,

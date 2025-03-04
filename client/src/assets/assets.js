@@ -1,9 +1,9 @@
-import Mobile1 from "./Mobile1.png";
-import Mobile2 from "./Mobile2.png";
-import Mobile3 from "./Mobile3.png";
-import Mobile4 from "./Mobile4.png";
-import Mobile5 from "./Mobile5.png";
-import Mobile6 from "./Mobile6.png";
+import Mobile1 from "./Mobile_1.png";
+import Mobile2 from "./Mobile_2.png";
+import Mobile3 from "./Mobile_3.png";
+import Mobile4 from "./Mobile_4.png";
+import Mobile5 from "./Mobile_5.png";
+import Mobile6 from "./Mobile_6.png";
 import tv_1 from "./tv_1.png";
 import tv_2 from "./tv_2.png";
 import tv_3 from "./tv_3.png";
@@ -12,6 +12,7 @@ import tv_5 from "./tv_5.png";
 import tv_6 from "./tv_6.png";
 
 export const products = [
+
   {
     id: 1,
     name: "Samsung Galaxy Z Flip 6",
@@ -111,39 +112,6 @@ export const products = [
   },
   {
     id: 9,
-    name: "Intex LED TV",
-    description: "Intex LED TV 32 inch Full HD LED Smart TV",
-    size: "32 inch",
-    price: 13457,
-    image: [tv_3],
-    category: "TV",
-    featured: false,
-    rating: 3.5,
-  },
-  {
-    id: 10,
-    name: "DU7660 Crystal 4K UHD Smart TV",
-    description: "DU7660 Crystal 4K UHD Smart TV 55 inch",
-    size: "55 inch",
-    price: 8999,
-    image: [tv_4],
-    category: "TV",
-    featured: true,
-    rating: 4.5,
-  },
-  {
-    id: 11,
-    name: "Samsung QLED Ultra HD Smart Tizen TV",
-    description: "Samsung QLED Ultra HD Smart Tizen TV 65 inch",
-    size: "65 inch",
-    price: 159999,
-    image: [tv_5],
-    category: "TV",
-    featured: true,
-    rating: 5.0,
-  },
-  {
-    id: 12,
     name: "Croma HD LED Smart TV",
     description: "Croma HD LED Smart TV 43 inch with Bezel Less Design",
     size: "43 inch",
@@ -152,5 +120,29 @@ export const products = [
     category: "TV",
     featured: true,
     rating: 4.5,
+  },
+  {
+    id: 4,
+    name: "Nothing Phone (2a)",
+    description:
+      "Nothing Phone (2a) 5G AI Smartphone (Black, 12GB RAM, 256GB Storage)",
+    size: "12GB + 256GB",
+    price: 29999,
+    image: [Mobile4],
+    category: "Mobile",
+    featured: true,
+    rating: 4.5,
+    countInStock: 6,
+  },
+  {
+    id: 7,
+    name: "Croma CREL ",
+    description: "Croma CREL7321 32 inch HD Ready LED TV",
+    size: "32 inch",
+    price: 8490,
+    image: [tv_1],
+    category: "TV",
+    featured: false,
+    rating: 3.0,
   },
 ];

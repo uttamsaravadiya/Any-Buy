@@ -1,11 +1,11 @@
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-const MONGODB_URI = "mongodb://localhost:27017/any-buy";
-dotenv.config();
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI); // ✅ No need for deprecated options
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("MongoDB connection error:", error);
@@ -13,4 +13,4 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
+module.exports = connectDB;

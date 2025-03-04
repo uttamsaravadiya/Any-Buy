@@ -1,7 +1,7 @@
-import User from "../models/User.js";
+const User = require("../models/User.js");
 
-//Add products to user cart
-export const addToCart = async (req, res) => {
+// Add products to user cart
+const addToCart = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (user.cart.includes(req.params.id)) {
@@ -15,7 +15,7 @@ export const addToCart = async (req, res) => {
   }
 };
 
-//Update user cart
+// Update user cart
 const updateCart = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -27,8 +27,8 @@ const updateCart = async (req, res) => {
   }
 };
 
-//Get user cart data
-export const getCart = async (req, res) => {
+// Get user cart data
+const getCart = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate("cart");
     res.status(200).json(user.cart);
@@ -37,8 +37,8 @@ export const getCart = async (req, res) => {
   }
 };
 
-//Remove product from user cart
-export const removeFromCart = async (req, res) => {
+// Remove product from user cart
+const removeFromCart = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     user.cart = user.cart.filter((item) => item.toString() !== req.params.id);
@@ -49,4 +49,4 @@ export const removeFromCart = async (req, res) => {
   }
 };
 
-export { addToCart, getCart, removeFromCart, updateCart };
+module.exports = { addToCart, getCart, removeFromCart, updateCart };

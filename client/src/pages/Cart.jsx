@@ -34,7 +34,7 @@ const Cart = ({ cart, removeFromCart }) => {
     <div>
       <h1 className='flex justify-center mt-6 text-5xl'>Cart</h1>
       <div className='h-[1px] mt-4 w-[80rem] bg-gray-600 flex m-auto'></div>
-      {user ? (
+      {!user ? (
         cart.length === 0 ? (
           <>
             <p className='text-3xl mt-28 text-center'>Your cart is empty.</p>

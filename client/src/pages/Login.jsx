@@ -18,6 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password);
+      
       navigate('/');
     } catch (error) {
       console.error('Login failed:', error);

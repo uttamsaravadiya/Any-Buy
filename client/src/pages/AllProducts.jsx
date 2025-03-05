@@ -67,7 +67,7 @@ const AllProducts = () => {
   };
 
   const applyFilters = () => {
-    setAppliedFilters(filters); 
+    setAppliedFilters(filters);
   };
 
   return (
@@ -83,7 +83,9 @@ const AllProducts = () => {
             value={filters.category}
             onChange={(e) => {
               setFilters({ ...filters, category: e.target.value });
-              navigate(e.target.value ? `?category=${e.target.value}` : "/allproducts");
+              navigate(
+                e.target.value ? `?category=${e.target.value}` : "/allproducts"
+              );
             }}
             className="w-full p-2 border rounded-lg"
           >
@@ -100,18 +102,46 @@ const AllProducts = () => {
 
         <div className="mt-4">
           <label className="font-medium text-gray-700">Price Range</label>
-          <input type="number" name="minPrice" placeholder="Min Price" value={filters.minPrice} onChange={handleFilterChange} className="w-full p-2 border rounded-lg mt-2" />
-          <input type="number" name="maxPrice" placeholder="Max Price" value={filters.maxPrice} onChange={handleFilterChange} className="w-full p-2 border rounded-lg mt-2" />
+          <input
+            type="number"
+            name="minPrice"
+            placeholder="Min Price"
+            value={filters.minPrice}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg mt-2"
+          />
+          <input
+            type="number"
+            name="maxPrice"
+            placeholder="Max Price"
+            value={filters.maxPrice}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg mt-2"
+          />
         </div>
 
         <div className="mt-4">
           <label className="font-medium text-gray-700">Minimum Ratings</label>
-          <input type="number" name="minRating" min="0" max="5" placeholder="Min Rating" value={filters.minRating} onChange={handleFilterChange} className="w-full p-2 border rounded-lg" />
+          <input
+            type="number"
+            name="minRating"
+            min="0"
+            max="5"
+            placeholder="Min Rating"
+            value={filters.minRating}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg"
+          />
         </div>
 
         <div className="mt-4">
           <label className="font-medium text-gray-700">Condition</label>
-          <select name="condition" value={filters.condition} onChange={handleFilterChange} className="w-full p-2 border rounded-lg">
+          <select
+            name="condition"
+            value={filters.condition}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg"
+          >
             <option value="">All</option>
             <option value="advance">Advance</option>
             <option value="delivery">Delivery</option>
@@ -120,7 +150,12 @@ const AllProducts = () => {
 
         <div className="mt-4">
           <label className="font-medium text-gray-700">Sort By</label>
-          <select name="sort" value={filters.sort} onChange={handleFilterChange} className="w-full p-2 border rounded-lg">
+          <select
+            name="sort"
+            value={filters.sort}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded-lg"
+          >
             <option value="">Default</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
@@ -138,7 +173,11 @@ const AllProducts = () => {
 
       <div className="w-3/4 ml-6">
         <h2 className="text-2xl font-bold text-center">
-          {searchQuery ? `Search Results for "${searchQuery}"` : category ? category.toUpperCase() : "All Products"}
+          {searchQuery
+            ? `Search Results for "${searchQuery}"`
+            : category
+            ? category.toUpperCase()
+            : "All Products"}
         </h2>
 
         {loading && <p className="text-center">Loading products...</p>}
@@ -147,8 +186,16 @@ const AllProducts = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-4">
           {products.length > 0 ? (
             products.map((product) => (
-              <div key={product.id} className="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition" onClick={() => navigate(`/product/${product.id}`)}>
-                <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-4 rounded-md" />
+              <div
+                key={product.id}
+                className="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
+                <img
+                  src={`http://localhost:5000/${product.image}`}
+                  alt={product.name}
+                  className="w-full h-40 object-cover mb-4 rounded-md"
+                />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="text-gray-600">${product.price}</p>
                 <p className="text-yellow-500">⭐ {product.rating}</p>

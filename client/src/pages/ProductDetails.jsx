@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { FaStar, FaShoppingCart, FaHeart, FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaHeart,
+  FaInstagram,
+  FaShoppingCart,
+  FaStar,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import { products } from "../assets/assets"; // Adjust the path as needed
 
 const ProductDetailSection = () => {
@@ -46,7 +54,7 @@ const ProductDetailSection = () => {
         {/* Left Column: Product Image */}
         <div className="md:w-1/2 flex items-center justify-center">
           <img
-            src={product.image[0]}
+            src={`http://localhost:5000/${product.image}`}
             alt={product.name}
             className="max-w-full h-auto object-cover rounded shadow-md"
           />

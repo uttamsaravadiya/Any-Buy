@@ -1,7 +1,7 @@
 // src/components/ProductListSection.jsx
 import React from "react";
-import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { products } from "../assets/assets"; // Ensure this path points to your products data
 
 const ProductListSection = () => {
@@ -20,7 +20,7 @@ const ProductListSection = () => {
               className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
             >
               <img
-                src={product.image[0]}
+                src={`http://localhost:5000/${product.image}`}
                 alt={product.name}
                 className="w-full h-48 object-cover"
               />

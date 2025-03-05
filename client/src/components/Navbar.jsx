@@ -1,33 +1,33 @@
-import { Plus, Search, ShoppingCart, User } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Plus, Search, ShoppingCart, User } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { logout } = useAuth();
-  const { user } = useAuth();
+  const { logout, user } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const timerRef = useRef(null); // To store the timer
-  const navi = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const timerRef = useRef(null);
+  const profileRef = useRef(null);
+  const navigate = useNavigate();
 
-  const handleMouseEnter = () => {
-
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setShowProfileMenu(true);
-    }, 300);
+  // Handle Search Submission
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/allproducts?query=${searchQuery}`);
+    }
   };
 
-  const handleMouseLeave = () => {
-
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setShowProfileMenu(false);
-    }, 300); 
-  };
-
+  // Close Profile Menu on Outside Click
   useEffect(() => {
-    return () => clearTimeout(timerRef.current);
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -40,31 +40,36 @@ const Navbar = () => {
             </Link>
           </div>
 
+          {/* Search Bar */}
           <div className="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
             <div className="max-w-lg w-full lg:max-w-xs">
-              <div className="relative">
+              <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-rich-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1  sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-rich-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 sm:text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <button type="submit" className="absolute inset-y-0 left-0 pl-3 flex items-center">
                   <Search className="h-5 w-5 text-gray-400" />
-                </div>
-              </div>
+                </button>
+              </form>
             </div>
           </div>
 
+          {/* Icons */}
           <div className="flex items-center">
             <Link to="/cart" className="p-2 text-gray-700 hover:text-gray-800">
               <ShoppingCart className="h-6 w-6" />
             </Link>
 
-            {/* Profile dropdown */}
+            {/* Profile Dropdown */}
             <div
               className="ml-4 relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setShowProfileMenu(true)}
+              onMouseLeave={() => setShowProfileMenu(false)}
+              ref={profileRef}
             >
               <button className="p-2 text-gray-700 hover:text-gray-800">
                 <User className="h-6 w-6" />
@@ -74,31 +79,19 @@ const Navbar = () => {
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-rich-100 ring-1 ring-black ring-opacity-5">
                   {user ? (
                     <>
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
-                      >
+                      <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300">
                         Profile
                       </Link>
-                      <button
-                        onClick={logout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
-                      >
+                      <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-rich-300">
                         Logout
                       </button>
                     </>
                   ) : (
                     <>
-                      <Link
-                        to="/login"
-                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
-                      >
+                      <Link to="/login" className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black">
                         Login
                       </Link>
-                      <Link
-                        to="/register"
-                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
-                      >
+                      <Link to="/register" className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black">
                         Register
                       </Link>
                     </>
@@ -107,17 +100,12 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* add product */}
-            
-            <div>
-              {user && (user.userType === 'shopkeeper' || user.userType === 'renowned') ? (
-                <Link to='/add' className="p-2 text-gray-700 hover:text-gray-800">
-                  <Plus className="h-6 w-6 ml-6" />
-                </Link>
-              ) : (
-                <div />
-              )}
-            </div>
+            {/* Add Product Button */}
+            {user && (user.userType === "shopkeeper" || user.userType === "renowned") && (
+              <Link to="/add" className="p-2 text-gray-700 hover:text-gray-800">
+                <Plus className="h-6 w-6 ml-6" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -12,7 +12,13 @@ const FeaturedProducts = () => {
         const response = await fetch("http://localhost:5000/api/products");
         const data = await response.json();
         console.log("Fetched Products:", data);
-        setProducts(data.products || []);
+
+        // Filter products with rating greater than 4
+        const filteredProducts = data.products?.filter(
+          (product) => product.rating > 4.8
+        ) || [];
+
+        setProducts(filteredProducts);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -35,47 +41,53 @@ const FeaturedProducts = () => {
           Featured Products
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 px-4">
-          {products.map((product) => (
-            <div
-              key={product._id}
-              className="bg-white rounded-xl shadow-md overflow-hidden border"
-            >
-              {/* Product Image */}
-              <div className="w-full h-60 flex items-center justify-center bg-gray-100">
-                <img
-                  src={`http://localhost:5000/${product.image}`}
-                  alt={product.name}
-                  className="h-full object-contain"
-                />
-              </div>
-
-              {/* Product Details */}
-              <div className="p-4 text-center">
-                <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-                <p className="text-gray-600 text-xl font-bold mb-1">
-                  ${product.price}
-                </p>
-
-                {/* Star Rating */}
-                <div className="flex justify-center items-center gap-1 text-yellow-500 my-2">
-                  {[...Array(Math.floor(product.rating || 0))].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                  {product.rating % 1 !== 0 && (
-                    <Star size={16} className="text-yellow-500 opacity-50" />
-                  )}
-                  <span className="text-gray-500 text-sm">
-                    ({product.rating || 0})
-                  </span>
+          {products.length > 0 ? (
+            products.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white rounded-xl shadow-md overflow-hidden border"
+              >
+                {/* Product Image */}
+                <div className="w-full h-60 flex items-center justify-center bg-gray-100">
+                  <img
+                    src={`http://localhost:5000/${product.image}`}
+                    alt={product.name}
+                    className="h-full object-contain"
+                  />
                 </div>
 
-                {/* Buy Now Button */}
-                <button className="mt-3 w-full py-3 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700 transition">
-                  Buy Now
-                </button>
+                {/* Product Details */}
+                <div className="p-4 text-center">
+                  <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
+                  <p className="text-gray-600 text-xl font-bold mb-1">
+                    ${product.price}
+                  </p>
+
+                  {/* Star Rating */}
+                  <div className="flex justify-center items-center gap-1 text-yellow-500 my-2">
+                    {[...Array(Math.floor(product.rating || 0))].map((_, i) => (
+                      <Star key={i} size={16} fill="currentColor" />
+                    ))}
+                    {product.rating % 1 !== 0 && (
+                      <Star size={16} className="text-yellow-500 opacity-50" />
+                    )}
+                    <span className="text-gray-500 text-sm">
+                      ({product.rating || 0})
+                    </span>
+                  </div>
+
+                  {/* Buy Now Button */}
+                  <button className="mt-3 w-full py-3 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700 transition">
+                    Buy Now
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-xl col-span-full">
+              No featured products found.
+            </p>
+          )}
         </div>
       </div>
     </div>

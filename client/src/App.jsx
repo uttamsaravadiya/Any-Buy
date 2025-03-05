@@ -11,6 +11,7 @@ import AddProduct from './pages/AddProduct';
 import { AuthProvider } from './context/AuthContext';
 import ProductListSection from'./pages/ProductListSection';
 import Dashbord from'./pages/Admin/Dashbord';
+import AllProducts from './pages/AllProducts';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -37,6 +38,7 @@ function App() {
           <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} />} />
           <Route path="/add" element={<AddProduct />} />
           <Route path='/dashbord' element={<Dashbord/>}/>
+          <Route path='/allproducts' element={<AllProducts/>}/>
         </Routes>
       </div>
     </AuthProvider>

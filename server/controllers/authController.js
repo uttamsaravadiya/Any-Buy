@@ -3,10 +3,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
 const JWT_SECRET = "Superman";
 
-
 exports.register = async (req, res) => {
   try {
-    const { fullName, email, password, userType, phone, address } = req.body;
+    const { firstName, lastName, email, password, userType, phone, address } =
+      req.body;
     // console.log("User Registration Data:", {
     //   fullName,
     //   email,
@@ -25,7 +25,8 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      fullName,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       userType,
@@ -46,7 +47,8 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       _id: user._id,
-      fullName: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       userType: user.userType,
       phone: user.phone,
@@ -92,7 +94,8 @@ exports.login = async (req, res) => {
 
     res.json({
       _id: user._id,
-      fullName: user.fullName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       userType: user.userType,
       phone: user.phone,

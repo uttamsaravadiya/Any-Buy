@@ -4,8 +4,16 @@ const Product = require("../models/Product");
 // @route POST /api/products
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, description, color, condition, category, rating } =
-      req.body;
+    const {
+      name,
+      price,
+      description,
+      color,
+      condition,
+      category,
+      rating,
+      stock,
+    } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: "Product image is required" });
@@ -19,6 +27,7 @@ exports.createProduct = async (req, res) => {
       image: req.file.path, // Store image path
       condition,
       category,
+      stock: stock || 0, // Default to 0 if not provided
       rating: rating || 0, // Default to 0 if not provided
     });
 
@@ -135,6 +144,75 @@ exports.searchProducts = async (req, res) => {
     res.json({ totalProducts: products.length, products });
   } catch (error) {
     console.error("Error searching products:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.filterProducts = async (req, res) => {
+  try {
+    const { category, minPrice, maxPrice, minRating, condition, sort } =
+      req.query;
+
+    let filter = {};
+
+    // ✅ Category Mapping
+    const categoryMap = {
+      "home-appliances": "Home Appliances",
+      headphones: "Headphones",
+      laptop: "Laptop",
+      "gaming-accessories": "Gaming Accessories",
+      phone: "Phone",
+      television: "Television",
+      smartwatch: "Smartwatch",
+    };
+
+    // ✅ Convert URL-friendly category to actual database category
+    if (category) {
+      const categoryMatch = categoryMap[category.toLowerCase()];
+      if (!categoryMatch) {
+        return res.status(400).json({ message: "Invalid category" });
+      }
+      filter.category = categoryMatch;
+    }
+
+    // ✅ Fix Price Filtering Logic
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice); // Convert `minPrice` to a number
+      if (maxPrice) filter.price.$lte = Number(maxPrice); // Convert `maxPrice` to a number
+    }
+
+    // ✅ Filter by minimum rating
+    if (minRating) {
+      filter.rating = { $gte: parseFloat(minRating) };
+    }
+
+    // ✅ Filter by condition (must be "advance" or "delivery")
+    if (
+      condition &&
+      ["advance", "delivery"].includes(condition.toLowerCase())
+    ) {
+      filter.condition = condition.toLowerCase();
+    }
+
+    // ✅ Sorting Logic (Default: No Sorting)
+    let sortOption = {};
+    if (sort === "price-asc") {
+      sortOption.price = 1; // Sort Price Low to High
+    } else if (sort === "price-desc") {
+      sortOption.price = -1; // Sort Price High to Low
+    }
+
+    // 🔍 Fetch filtered & sorted products
+    const products = await Product.find(filter).sort(sortOption);
+
+    if (!products.length) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    res.json({ totalProducts: products.length, products });
+  } catch (error) {
+    console.error("Error filtering products:", error);
     res.status(500).json({ message: error.message });
   }
 };

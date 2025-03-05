@@ -22,6 +22,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    stock: {
+      type: Number,
+      required: true,
+    },
     condition: {
       type: String,
       enum: ["advance", "delivery"],

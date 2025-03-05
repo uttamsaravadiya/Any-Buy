@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
     userType: {
       type: String,
       enum: ["user", "shopkeeper", "renowned"],
@@ -26,15 +30,11 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: function () {
-        return this.userType === "shopkeeper" || this.userType === "renowned";
-      },
+      required: function () {},
     },
     address: {
       type: String,
-      required: function () {
-        return this.userType === "shopkeeper" || this.userType === "renowned";
-      },
+      required: function () {},
     },
     cart: [
       {

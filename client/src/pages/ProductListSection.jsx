@@ -29,7 +29,7 @@ const ProductListSection = () => {
                   {product.name}
                 </h3>
                 <p className="mt-2 text-gray-600">${product.price}</p>
-                <div className="flex items-center mt-2 text-yellow-500">
+w                <div className="flex items-center mt-2 text-yellow-500">
                   {Array.from({ length: fullStars }).map((_, i) => (
                     <FaStar key={i} />
                   ))}

@@ -1,18 +1,32 @@
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Sidebar from "../../components/Admin/Sidebar";
-import Navbar from "../../components/Navbar";
 import ProductTable from "../../components/Admin/ProductTable";
+import AdminOrders from "../../components/Admin/AdminOrders";
+import UsersTable from "../../components/Admin/UsersTable";
+import CategoriesTable from "../../components/Admin/CategoriesTable";
 
 const Dashboard = () => {
   return (
     <div className="flex h-screen">
+      {/* Sidebar always visible */}
       <Sidebar />
+
+      {/* Main Content Area */}
       <main className="flex-1 p-10 bg-gray-100">
-        {/* <Navbar /> */}
-        <div className="flex justify-end my-5">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">ADD NEW PRODUCT</button>
-        </div>
-        <ProductTable />
+        <Routes>
+          {/* Default admin dashboard view - Shows Product Table */}
+          <Route path="/" element={
+            <>
+              <ProductTable />
+            </>
+          } />
+          
+          {/* Orders Page */}
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<UsersTable/>}/>
+          <Route path="categories" element={<CategoriesTable/>}/>
+        </Routes>
       </main>
     </div>
   );

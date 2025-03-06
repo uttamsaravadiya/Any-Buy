@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaBell } from "react-icons/fa6";
-import { NavLink } from "../../../frontend/node_modules/react-router-dom/dist";
+import { NavLink } from "react-router-dom";
 
 const AdminOrders = () => {
   const orders = [
     {
       id: "#243b99f6-aa35-472d-8487-0a4f29909430",
-      name: "Aleksandar",
-      country: "Serbia",
       status: "Processing",
       subtotal: "$1564",
       date: "Sat Jun 08 2024",
@@ -17,20 +15,6 @@ const AdminOrders = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-blue-500 text-white p-5">
-        <h1 className="text-2xl font-bold">SINGITRONIC</h1>
-        <nav className="mt-5">
-          <ul>
-            <li><NavLink to="/admin/dashboard">Dashboard</NavLink></li>
-            <li className="font-bold">Orders</li>
-            <li><NavLink to="/admin/products">Products</NavLink></li>
-            <li><NavLink to="/admin/categories">Categories</NavLink></li>
-            <li><NavLink to="/admin/users">Users</NavLink></li>
-            <li><NavLink to="/admin/settings">Settings</NavLink></li>
-          </ul>
-        </nav>
-      </aside>
       
       {/* Main Content */}
       <main className="flex-1 p-10 bg-gray-100">
@@ -52,7 +36,6 @@ const AdminOrders = () => {
           <thead>
             <tr className="border-b">
               <th className="p-3 text-left">Order ID</th>
-              <th className="p-3 text-left">Name & Country</th>
               <th className="p-3 text-left">Status</th>
               <th className="p-3 text-left">Subtotal</th>
               <th className="p-3 text-left">Date</th>
@@ -63,7 +46,6 @@ const AdminOrders = () => {
             {orders.map((order, index) => (
               <tr key={index} className="border-b hover:bg-gray-100">
                 <td className="p-3">{order.id}</td>
-                <td className="p-3">{order.name}, {order.country}</td>
                 <td className="p-3">
                   <span className="bg-green-200 text-green-700 px-2 py-1 rounded">{order.status}</span>
                 </td>

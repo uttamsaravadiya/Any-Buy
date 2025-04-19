@@ -76,7 +76,7 @@ const Navbar = () => {
               </button>
 
               {showProfileMenu && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-rich-100 ring-1 ring-black ring-opacity-5">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 -translate-y-2 translate-x-14 rounded-md shadow-lg py-1 x- z-50 bg-rich-100 ring-1 ring-black ring-opacity-5">
                   {user ? (
                     <>
                       <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300">

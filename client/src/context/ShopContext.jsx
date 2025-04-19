@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export const shopContext = createContext();
+export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const currency = "₹";
@@ -115,7 +115,7 @@ const ShopContextProvider = (props) => {
       const productData = products.find(
         (product) => product._id.toString() === item.product.toString()
       );
-
+      
       if (productData) {
         totalAmount += item.quantity * productData.price; // Multiply quantity by price
       }

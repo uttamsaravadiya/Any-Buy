@@ -70,6 +70,15 @@ const AllProducts = () => {
     setAppliedFilters(filters);
   };
 
+  const handleProductClick = (id) => {
+    if (!id) {
+      console.error("Product ID is undefined!");
+    } else {
+      console.log("Product clicked:", id);
+    }
+    navigate(`/product/${id}`);
+  };
+
   return (
     <div className="flex p-6 bg-gray-100 min-h-screen">
       {/* Filters */}
@@ -187,15 +196,17 @@ const AllProducts = () => {
           {products.length > 0 ? (
             products.map((product) => (
               <div
-                key={product.id}
+                key={product.id || product._id} // Ensure correct key
                 className="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
-                onClick={() => navigate(`/product/${product.id}`)}
+                onClick={() => handleProductClick(product.id || product._id)} // Ensure correct ID
               >
-                <img
-                  src={`http://localhost:5000/${product.image}`}
-                  alt={product.name}
-                  className="w-full h-40 object-cover mb-4 rounded-md"
-                />
+                <div className="w-full h-60 mb-4 rounded-md overflow-hidden">
+                  <img
+                    src={`http://localhost:5000/${product.image}`}
+                    alt={product.name}
+                    className=" h-full object-contain w-full" 
+                  />
+                </div>
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="text-gray-600">${product.price}</p>
                 <p className="text-yellow-500">⭐ {product.rating}</p>

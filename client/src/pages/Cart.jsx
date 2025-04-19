@@ -1,102 +1,92 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
-const Cart = ({ cart, removeFromCart }) => {
-  const { user } = useAuth();
+const Cart = () => {
+  const [cart, setCart] = useState([]);
   const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/login");
+
+  // Load cart data from localStorage on component mount
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
+  }, []);
+
+  // Function to update cart in local storage
+  const updateLocalStorage = (updatedCart) => {
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const [quantities, setQuantities] = useState(
-    cart.reduce((acc, deal) => {
-      acc[deal.id] = 1;
-      return acc;
-    }, {})
-  );
-
-  const incrHandler = (id) => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [id]: prevQuantities[id] + 1,
-    }));
+  // Handle quantity change
+  const handleQuantityChange = (id, action) => {
+    const updatedCart = cart.map((item) => {
+      if (item.id === id) {
+        const newQuantity =
+          action === "increase" ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+    updateLocalStorage(updatedCart);
   };
 
-  const decrHandler = (id) => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [id]: prevQuantities[id] > 1 ? prevQuantities[id] - 1 : 1,
-    }));
+  // Remove item from cart
+  const removeFromCart = (id) => {
+    const updatedCart = cart.filter((item) => item.id !== id);
+    updateLocalStorage(updatedCart);
   };
+
+  // Calculate total price
+  const totalAmount = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div>
-      <h1 className="flex justify-center mt-6 text-5xl">Cart</h1>
-      <div className="h-[1px] mt-4 w-[80rem] bg-gray-600 flex m-auto"></div>
-      {user ? (
-        cart.length === 0 ? (
-          <>
-            <p className="text-3xl mt-28 text-center">Your cart is empty.</p>
-            <p className="text-lg mt-4 text-center">
-              Please Select the product
-            </p>
-          </>
-        ) : (
-          cart.map((deal) => (
-            <div
-              key={deal.id}
-              className="flex w-[1290px] mt-8 bg-rich-200 mb-7 rounded-md h-48 items-center justify-between m-auto"
-            >
-              <img src={deal.image} className="h-32 w-32 ml-8 " />
-              <div className="mr-auto ml-14">
-                <p className="mb-6 text-xl font-bold">{deal.title}</p>
-                <p className="text-xl font-medium">{deal.price}</p>
-              </div>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="text-2xl font-bold text-center mb-4">Shopping Cart</h2>
 
-              <div className="w-28 mr-5">
-                <div className="bg-rich-100 flex justify-center gap-5 py-1 rounded-sm text-[6px] text-[#344151]">
-                  <button
-                    onClick={() => decrHandler(deal.id)}
-                    className="border-r-2 text-center w-8 border-rich-400 text-xl"
-                  >
-                    -
-                  </button>
-                  <div className="font-bold gap-3 text-xl">
-                    {quantities[deal.id]}
-                  </div>
-                  <button
-                    onClick={() => incrHandler(deal.id)}
-                    className="border-l-2 text-center w-8 border-rich-400 text-xl"
-                  >
-                    +
-                  </button>
-                </div>
-                <div>
-                  <button className="bg-rich-500 mt-4 h-8 w-[7rem] text-white px-5 rounded-md text-lg">
-                    Buy Now
-                  </button>
-                  <br />
-                  <button
-                    className="bg-red-400 mt-2 h-8 w-[7rem] text-white px-5 rounded-md text-lg"
-                    onClick={() => removeFromCart(deal.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        )
+      {cart.length === 0 ? (
+        <p className="text-center text-gray-600">Your cart is empty.</p>
       ) : (
-        <div className="flex flex-col justify-center items-center">
-          <p className="text-3xl mt-28 ">Your cart is empty.</p>
-          <button
-            onClick={handleLogin}
-            className="bg-slate-400 mt-8 h-8 w-[7rem] text-white px-5 rounded-md text-lg"
-          >
-            Login
-          </button>
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+          {cart.map((item) => (
+            <div key={item.id} className="flex items-center border-b py-4">
+              <img src={`http://localhost:5000/${item.image}`} alt={item.name} className="w-20 h-20 object-contain mr-4" />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold">{item.name}</h3>
+                <p className="text-gray-600">${item.price.toFixed(2)}</p>
+              </div>
+              <div className="flex items-center">
+                <button
+                  onClick={() => handleQuantityChange(item.id, "decrease")}
+                  className="px-2 py-1 bg-gray-300 text-gray-800 rounded-l"
+                >
+                  -
+                </button>
+                <span className="px-3">{item.quantity}</span>
+                <button
+                  onClick={() => handleQuantityChange(item.id, "increase")}
+                  className="px-2 py-1 bg-gray-300 text-gray-800 rounded-r"
+                >
+                  +
+                </button>
+              </div>
+              <button
+                onClick={() => removeFromCart(item.id)}
+                className="ml-4 text-red-500 hover:text-red-700"
+              >
+                ❌
+              </button>
+            </div>
+          ))}
+
+          <div className="mt-6 text-right">
+            <h3 className="text-xl font-bold">Total: ${totalAmount.toFixed(2)}</h3>
+            <button
+              onClick={() => navigate("/placeorder")}
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Proceed to Checkout
+            </button>
+          </div>
         </div>
       )}
     </div>

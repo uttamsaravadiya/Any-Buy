@@ -48,7 +48,7 @@ const FeaturedProducts = () => {
                 className="bg-white rounded-xl shadow-md overflow-hidden border"
               >
                 {/* Product Image */}
-                <div className="w-full h-60 flex items-center justify-center bg-gray-100">
+                <div className="w-full h-60 flex items-center justify-center ">
                   <img
                     src={`http://localhost:5000/${product.image}`}
                     alt={product.name}

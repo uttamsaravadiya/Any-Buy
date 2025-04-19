@@ -23,7 +23,7 @@ const AdminOrders = () => {
           <div className="flex items-center gap-4">
             <FaBell className="text-xl" />
             <img
-              src="/randomuser.jpg"
+              src="https://api.dicebear.com/6.x/initials/svg?seed=A B"
               alt="User"
               className="w-10 h-10 rounded-full"
             />

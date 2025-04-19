@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Hero from "../components/Hero";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "./ProductCard.jsx";
 import BrowseCategories from "../components/BrowseCategories";
 import FeaturedProducts from "../components/FeaturedProducts";
 import axios from "axios";

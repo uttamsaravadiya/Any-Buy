@@ -5,22 +5,22 @@ const Hero = () => {
   const products = [
     {
       id: 1,
-      name: "Smartphone Pro",
-      description: "Latest technology with advanced features.",
+      name: "Gaming Laptop",
+      description: "Powerful laptop for gaming and productivity.",
       price: "$999",
       imageUrl: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRJMfZ47Q4PqPoRnyJ3kMcTt9NXijjMWaeMsP2f7tsVTOzSvfF0mfmjqNkXJ4Jo22pLjk-IKH7CGq6NkKQl2yDSg0AGBQXFrvybggW6GIl0JyMLEyGchF4-", // Replace with actual image
     },
     {
       id: 2,
-      name: "Ultra Laptop",
-      description: "High-performance laptop for professionals.",
-      price: "$1499",
+      name: "Gaming Headphone",
+      description: "High-quality sound and comfort for long gaming sessions.",
+      price: "$99",
       imageUrl: "https://w7.pngwing.com/pngs/969/417/png-transparent-red-beats-by-dr-dre-wireless-headphones-headphones-beats-electronics-microphone-sound-disc-jockey-headphone-electronics-recording-studio-musician-thumbnail.png"
     },
     {
       id: 3,
-      name: "Gaming Headphones",
-      description: "Immersive sound experience for gamers.",
+      name: "Smartphone",
+      description: "Latest smartphone with advanced features.",
       price: "$299",
       imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrXhxO1XXZIl_9xIoPZs6XJTIKc3Ui8S4uQuWK3do372AFf2H6ckY8FkU&s",
     },

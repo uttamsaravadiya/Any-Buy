@@ -12,6 +12,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProductListSection from'./pages/ProductListSection';
 import Dashbord from'./pages/Admin/Dashbord';
 import AllProducts from './pages/AllProducts';
+import PlaceOrder from './pages/PlaceOrder';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -39,6 +40,7 @@ function App() {
           <Route path="/add" element={<AddProduct />} />
           <Route path='/admin/*' element={<Dashbord/>}/>
           <Route path='/allproducts' element={<AllProducts/>}/>
+          <Route path='/placeorder' element={<PlaceOrder/>}/>
         </Routes>
       </div>
     </AuthProvider>

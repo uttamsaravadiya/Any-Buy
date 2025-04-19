@@ -24,9 +24,10 @@ const Profile = () => {
   return (
     <div className="flex p-6 bg-gray-100 min-h-screen">
       {/* Sidebar */}
-      <div className="w-1/4 bg-white p-6 rounded-2xl shadow-lg">
+      <div className="w-1/4 bg-white p-6 rounded-2x shadow-lg">
         <img
-          src={formData.profileImage || "https://via.placeholder.com/150"}
+          src={formData.profileImage || `https://api.dicebear.com/6.x/initials/svg?seed=${formData.firstName} ${formData.lastName}` }
+           // `https://api.dicebear.com/6.x/initials/svg?seed=${firstName} ${lastName}`
           alt="Profile"
           className="w-24 h-24 rounded-full mx-auto"
         />

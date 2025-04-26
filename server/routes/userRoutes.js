@@ -8,6 +8,6 @@ const upload = require("../middleware/uploadMulter");
 const router = express.Router();
 
 router.get("/:id", getUserDetails); // Get user details by ID
-router.put("/:id", upload.single("image"), updateUserProfile);
+router.put("/update/:id", upload.single("image"), updateUserProfile);
 
 module.exports = router;

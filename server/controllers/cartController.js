@@ -1,62 +1,54 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 
-// @desc Add a product to the user's cart
-// @route POST /api/cart/:userId
-// exports.addToCart = async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-//     const { productId } = req.body;
-
-//     // Check if user exists
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     // Check if product exists
-//     const product = await Product.findById(productId);
-//     if (!product) {
-//       return res.status(404).json({ message: "Product not found" });
-//     }
-
-//     // Prevent duplicate product in cart
-//     if (user.cart.includes(productId)) {
-//       return res
-//         .status(400)
-//         .json({ message: "Product is already in the cart" });
-//     }
-
-//     // Add product to cart
-//     user.cart.push(productId);
-//     await user.save();
-
-//     res.json({
-//       message: "Product added to cart successfully",
-//       cart: user.cart,
-//     });
-//   } catch (error) {
-//     console.error("Error adding to cart:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// @desc Get user cart details
-// @route GET /api/cart/:userId
-exports.getUserCart = async (req, res) => {
+// @desc Add or increase a product quantity in the user's cart
+// @route PUT /api/cart/:userId
+exports.addToCart = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { productId, quantity } = req.body;
 
-    // Find the user and populate cart with product details
-    const user = await User.findById(userId).populate("cart");
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // If the cart is empty
-    if (user.cart.length === 0) {
-      return res.json({ message: "Cart is empty", cart: [] });
+    // Check if product already exists in user's cart
+    const existingItem = user.cart.find(
+      (item) => item.product.toString() === productId
+    );
+
+    if (existingItem) {
+      // If exists, update the quantity
+      existingItem.quantity += quantity;
+    } else {
+      // Else, push new product into cart
+      user.cart.push({ product: productId, quantity });
+    }
+
+    await user.save();
+    res.json({ message: "Cart updated successfully", cart: user.cart });
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Get the user's cart with product details
+// @route GET /api/cart/:userId
+exports.getUserCart = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Properly populate the product inside cart
+    const user = await User.findById(userId).populate({
+      path: "cart.product", // <<< correctly populate "product" inside "cart"
+      model: "Product",
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json({
@@ -64,61 +56,42 @@ exports.getUserCart = async (req, res) => {
       cart: user.cart,
     });
   } catch (error) {
-    console.error("Error fetching cart:", error);
+    console.error("Error fetching user cart:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// @desc Increase product quantity in cart
-// @route PUT /api/cart/:userId/increase
-exports.addToCart = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { productId } = req.body;
+// @desc Update product quantity in the user's cart (in the cart object itself)
+exports.updateCartItem = async (req, res) => {
+  const { userId } = req.params;
+  const { cartItemId, quantity } = req.body;
 
-    // Find user
+  try {
+    // Find user by ID
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Find product
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    // ✅ Fix: Ensure cart exists and is properly structured
-    if (!user.cart) {
-      user.cart = [];
-    }
-
-    // ✅ Fix: Check if cart contains valid objects before running .find()
+    // Find the item in the user's cart and update the quantity
     const cartItem = user.cart.find(
-      (item) => item.product && item.product.toString() === productId
+      (item) => item._id.toString() === cartItemId
     );
-
     if (cartItem) {
-      // ✅ Increase quantity instead of adding a duplicate entry
-      cartItem.quantity += 1;
+      cartItem.quantity = quantity;
+      await user.save(); // Save the updated user with the modified cart
+      return res.status(200).json({ message: "Cart updated successfully" });
     } else {
-      // ✅ Add product with quantity 1 if not in cart
-      user.cart.push({ product: productId, quantity: 1 });
+      return res.status(404).json({ message: "Item not found in cart" });
     }
-
-    // ✅ Save the updated user cart
-    await user.save();
-
-    res.json({
-      message: "Product quantity updated in cart",
-      cart: user.cart,
-    });
   } catch (error) {
-    console.error("Error updating cart quantity:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error updating cart:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+// @desc Remove a product from user's cart
+// @route DELETE /api/cart/:userId/remove/:cartId
 exports.removeFromCart = async (req, res) => {
   try {
     const { userId, cartId } = req.params;
@@ -129,10 +102,9 @@ exports.removeFromCart = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Remove the cart item by filtering out the matching `cartId`
+    // Remove the cart item by filtering out the matching cartId
     user.cart = user.cart.filter((item) => item._id.toString() !== cartId);
 
-    // ✅ Save updated cart
     await user.save();
 
     res.json({

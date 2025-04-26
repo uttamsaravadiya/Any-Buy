@@ -1,10 +1,13 @@
 import { Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 Import navigate
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // 👈 initialize navigate
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -13,10 +16,9 @@ const FeaturedProducts = () => {
         const data = await response.json();
         console.log("Fetched Products:", data);
 
-        // Filter products with rating greater than 4
-        const filteredProducts = data.products?.filter(
-          (product) => product.rating > 4.8
-        ) || [];
+        // Filter products with rating greater than 4.8
+        const filteredProducts =
+          data.products?.filter((product) => product.rating > 4.8) || [];
 
         setProducts(filteredProducts);
         setLoading(false);
@@ -45,10 +47,11 @@ const FeaturedProducts = () => {
             products.map((product) => (
               <div
                 key={product._id}
-                className="bg-white rounded-xl shadow-md overflow-hidden border"
+                className="bg-white rounded-xl shadow-md overflow-hidden border cursor-pointer hover:shadow-lg transition"
+                onClick={() => navigate(`/product/${product._id}`)} // 👈 navigate on card click
               >
                 {/* Product Image */}
-                <div className="w-full h-60 flex items-center justify-center ">
+                <div className="w-full h-60 flex items-center justify-center">
                   <img
                     src={`http://localhost:5000/${product.image}`}
                     alt={product.name}
@@ -60,7 +63,7 @@ const FeaturedProducts = () => {
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
                   <p className="text-gray-600 text-xl font-bold mb-1">
-                    ${product.price}
+                    ₹{product.price}
                   </p>
 
                   {/* Star Rating */}
@@ -76,10 +79,7 @@ const FeaturedProducts = () => {
                     </span>
                   </div>
 
-                  {/* Buy Now Button */}
-                  <button className="mt-3 w-full py-3 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700 transition">
-                    Buy Now
-                  </button>
+                  {/* (Optional) You can remove Buy Now Button */}
                 </div>
               </div>
             ))

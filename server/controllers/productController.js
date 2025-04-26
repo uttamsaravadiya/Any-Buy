@@ -1,40 +1,43 @@
 const Product = require("../models/Product");
 
-// @desc Create a new product
-// @route POST /api/products
+// @desc    Create a new product
+// @route   POST /api/products
+// @access  Admin (or Public for now)
 exports.createProduct = async (req, res) => {
   try {
+    // Pull exactly the fields you collect in your form
     const {
-      name,
+      name, // your form’s Title
       price,
       description,
-      color,
-      condition,
-      category,
-      rating,
       stock,
+      category,
+      condition, // "advance" or "delivery"
     } = req.body;
 
+    // Require image upload
     if (!req.file) {
       return res.status(400).json({ message: "Product image is required" });
     }
 
+    // Build and save
     const product = new Product({
       name,
       price,
       description,
-      color,
-      image: req.file.path, // Store image path
-      condition,
+      stock: Number(stock) || 0,
       category,
-      stock: stock || 0, // Default to 0 if not provided
-      rating: rating || 0, // Default to 0 if not provided
+      condition,
+      image: req.file.path, // multer’s file path
+      rating: 0, // default
+      numReviews: 0, // if you track reviews
     });
 
     await product.save();
     res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Create Product Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -178,6 +181,7 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 exports.filterProducts = async (req, res) => {
   try {
     const { category, minPrice, maxPrice, minRating, condition, sort } =
@@ -244,5 +248,58 @@ exports.filterProducts = async (req, res) => {
   } catch (error) {
     console.error("Error filtering products:", error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update product details (price, stock, description)
+// @route   PATCH /api/products/:id
+// @access  Public (or make it Admin protected later)
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { price, stock, description } = req.body;
+
+    // Find the product by ID
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Update only the fields that are provided
+    if (price !== undefined) product.price = price;
+    if (stock !== undefined) product.stock = stock;
+    if (description !== undefined) product.description = description;
+
+    // Save updated product
+    const updatedProduct = await product.save();
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.error("Update Product Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
+// @access  Public (or Admin-protected later)
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // findByIdAndDelete returns the deleted doc or null
+    const deleted = await Product.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({ message: "Product removed successfully" });
+  } catch (error) {
+    console.error("Delete Product Error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };

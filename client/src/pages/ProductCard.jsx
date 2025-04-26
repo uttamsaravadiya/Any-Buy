@@ -1,25 +1,43 @@
-
-
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import axios from "axios"; // ✅ Make sure axios is imported
+import { Heart, ShoppingCart } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProductCard = ({ product }) => {
   const { user } = useAuth();
 
   const handleAddToCart = async () => {
-    // Add to cart logic
+    if (!user || !user._id) {
+      console.error("User not logged in or missing user ID");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/cart/${user._id}`, // ✅ Pass correct userId here
+        {
+          productId: product._id, // ✅ Pass productId in request body
+        }
+      );
+
+      console.log("Product added to cart:", response.data);
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      alert("Failed to add product to cart.");
+    }
   };
 
   const handleAddToWishlist = async () => {
-    // Add to wishlist logic
+    // You can implement wishlist similarly later
+    console.log("Wishlist functionality pending.");
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img 
-        src={`http://localhost:5000/${product.image}`} 
+      <img
+        src={`http://localhost:5000/${product.image}`}
         alt={product.name}
         className="w-full h-48 object-cover"
       />
@@ -28,11 +46,11 @@ const ProductCard = ({ product }) => {
         <div className="mt-2 flex items-center justify-between">
           <div>
             <span className="text-xl font-bold text-gray-900">
-              ${product.price - (product.price * product.discount / 100)}
+              ₹{product.price - (product.price * product.discount) / 100}
             </span>
             {product.discount > 0 && (
               <span className="ml-2 text-sm text-gray-500 line-through">
-                ${product.price}
+                ₹{product.price}
               </span>
             )}
           </div>
@@ -51,7 +69,7 @@ const ProductCard = ({ product }) => {
             </button>
           </div>
         </div>
-        <Link 
+        <Link
           to={`/product/${product._id}`}
           className="mt-3 block text-center text-sm text-blue-600 hover:text-blue-700"
         >

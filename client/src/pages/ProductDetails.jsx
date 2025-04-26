@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   FaFacebookF,
@@ -10,9 +11,11 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -27,7 +30,6 @@ const ProductDetails = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("Fetched product data:", JSON.stringify(data, null, 2));
         setProduct(data);
         setLoading(false);
       })
@@ -42,25 +44,53 @@ const ProductDetails = () => {
     if (val > 0) setQuantity(val);
   };
 
-  const handleAddToCart = () => {
-    let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProductIndex = currentCart.findIndex((p) => p.id === product.id);
+  const handleAddToCart = async () => {
+    try {
+      if (!user || !user._id) {
+        alert("Please log in to add products to the cart.");
+        return;
+      }
 
-    if (existingProductIndex !== -1) {
-      currentCart[existingProductIndex].quantity += quantity;
-    } else {
-      currentCart.push({ ...product, quantity });
+      // Update localStorage
+      let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingProductIndex = currentCart.findIndex(
+        (p) => p.id === product.id
+      );
+
+      if (existingProductIndex !== -1) {
+        currentCart[existingProductIndex].quantity += quantity;
+      } else {
+        currentCart.push({ ...product, quantity });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(currentCart));
+
+      // Send request to update the cart in the database
+      await axios.put(`http://localhost:5000/api/cart/${user._id}`, {
+        productId: product._id,
+        quantity: quantity, // important!
+      });
+
+      console.log("Cart updated on server successfully!");
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add product to cart.");
     }
-
-    localStorage.setItem("cart", JSON.stringify(currentCart));
   };
 
   if (loading) {
-    return <div className="text-center py-10 text-gray-600">Loading product details...</div>;
+    return (
+      <div className="text-center py-10 text-gray-600">
+        Loading product details...
+      </div>
+    );
   }
 
   if (!product) {
-    return <div className="text-center py-10 text-red-500">Product not found.</div>;
+    return (
+      <div className="text-center py-10 text-red-500">Product not found.</div>
+    );
   }
 
   const fullStars = Math.floor(product.rating);
@@ -74,12 +104,19 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row gap-10">
         {/* Product Image */}
         <div className="md:w-1/2 flex items-center justify-center">
-          <img src={imageUrl} alt={product.name} className="max-w-full h-auto object-cover rounded shadow-md" />
+          <img
+            src={imageUrl}
+            alt={product.name}
+            className="max-w-full h-auto object-cover rounded shadow-md"
+          />
         </div>
 
         {/* Product Details */}
         <div className="md:w-1/2">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">{product.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+            {product.name}
+          </h1>
+
           <div className="flex items-center gap-2 mt-2">
             <div className="flex text-yellow-500">
               {Array.from({ length: fullStars }).map((_, i) => (
@@ -89,17 +126,27 @@ const ProductDetails = () => {
             </div>
             <span className="text-gray-600">(8 reviews)</span>
           </div>
-          <p className="text-2xl text-gray-800 font-semibold mt-4">${product.price}</p>
+
+          <p className="text-2xl text-gray-800 font-semibold mt-4">
+            ₹{product.price}
+          </p>
+
           <p className="text-gray-600 mt-2">
             Availability:{" "}
-            <span className={`font-medium ${product.countInStock > 0 ? "text-green-600" : "text-red-600"}`}>
-              {product.countInStock > 0 ? "In stock" : "Out of stock"}
+            <span
+              className={`font-medium ${
+                product.stock > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {product.stock > 0 ? "In stock" : "Out of stock"}
             </span>
           </p>
 
           {/* Quantity Input */}
           <div className="mt-4">
-            <label className="block mb-1 text-gray-700 font-medium">Quantity:</label>
+            <label className="block mb-1 text-gray-700 font-medium">
+              Quantity:
+            </label>
             <input
               type="number"
               value={quantity}
@@ -117,9 +164,14 @@ const ProductDetails = () => {
             >
               <FaShoppingCart /> Add to Cart
             </button>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              onClick={() => navigate("/placeorder")}
+            >
               Buy Now
             </button>
+
             <button className="flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 transition">
               <FaHeart className="text-red-500" /> Add to Wishlist
             </button>
@@ -127,8 +179,9 @@ const ProductDetails = () => {
 
           {/* Product Meta Info */}
           <div className="mt-6 text-sm text-gray-600 space-y-1">
-            <p>SKU: <span className="font-medium">{product.id}</span></p>
-            <p>Brand: <span className="font-medium">Brand Name</span></p>
+            <p>
+              ID: <span className="font-medium">{product._id}</span>
+            </p>
             <div className="flex items-center gap-2 mt-2">
               <span className="font-medium">Share:</span>
               <FaFacebookF className="cursor-pointer hover:text-blue-600" />
@@ -150,6 +203,7 @@ const ProductDetails = () => {
             Additional info
           </li>
         </ul>
+
         <div className="mt-4">
           <p className="text-gray-700">{product.description}</p>
         </div>

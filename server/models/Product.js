@@ -16,7 +16,6 @@ const productSchema = new mongoose.Schema(
     },
     color: {
       type: String,
-      required: true,
     },
     image: {
       type: String,
@@ -37,7 +36,7 @@ const productSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      default: 0,
+      default: 3,
     },
     reviews: [
       {

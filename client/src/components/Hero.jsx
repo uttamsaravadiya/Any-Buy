@@ -7,22 +7,25 @@ const Hero = () => {
       id: 1,
       name: "Gaming Laptop",
       description: "Powerful laptop for gaming and productivity.",
-      price: "$999",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRJMfZ47Q4PqPoRnyJ3kMcTt9NXijjMWaeMsP2f7tsVTOzSvfF0mfmjqNkXJ4Jo22pLjk-IKH7CGq6NkKQl2yDSg0AGBQXFrvybggW6GIl0JyMLEyGchF4-", // Replace with actual image
+      price: "₹599999",
+      imageUrl:
+        "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRJMfZ47Q4PqPoRnyJ3kMcTt9NXijjMWaeMsP2f7tsVTOzSvfF0mfmjqNkXJ4Jo22pLjk-IKH7CGq6NkKQl2yDSg0AGBQXFrvybggW6GIl0JyMLEyGchF4-", // Replace with actual image
     },
     {
       id: 2,
       name: "Gaming Headphone",
       description: "High-quality sound and comfort for long gaming sessions.",
-      price: "$99",
-      imageUrl: "https://w7.pngwing.com/pngs/969/417/png-transparent-red-beats-by-dr-dre-wireless-headphones-headphones-beats-electronics-microphone-sound-disc-jockey-headphone-electronics-recording-studio-musician-thumbnail.png"
+      price: "₹1999",
+      imageUrl:
+        "https://w7.pngwing.com/pngs/969/417/png-transparent-red-beats-by-dr-dre-wireless-headphones-headphones-beats-electronics-microphone-sound-disc-jockey-headphone-electronics-recording-studio-musician-thumbnail.png",
     },
     {
       id: 3,
       name: "Smartphone",
       description: "Latest smartphone with advanced features.",
-      price: "$299",
-      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrXhxO1XXZIl_9xIoPZs6XJTIKc3Ui8S4uQuWK3do372AFf2H6ckY8FkU&s",
+      price: "₹29999",
+      imageUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrXhxO1XXZIl_9xIoPZs6XJTIKc3Ui8S4uQuWK3do372AFf2H6ckY8FkU&s",
     },
   ];
 
@@ -44,7 +47,12 @@ const Hero = () => {
           className={`absolute inset-0 flex items-center justify-center transition-opacity duration-1000 ${
             index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
-          style={{ backgroundImage: `url(${product.imageUrl})`, backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition:"right 200px center", }}
+          style={{
+            backgroundImage: `url(${product.imageUrl})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 200px center",
+          }}
         >
           <div className="bg-gradient-to-r from-blue-700 via-transparent to-transparent w-full h-full z-10 flex items-center px-10">
             <div className="max-w-lg text-white">

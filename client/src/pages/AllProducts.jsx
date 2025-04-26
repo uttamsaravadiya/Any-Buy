@@ -6,7 +6,6 @@ const AllProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // UI state for filters
   const [filters, setFilters] = useState({
     category: "",
     minPrice: "",
@@ -15,15 +14,15 @@ const AllProducts = () => {
     condition: "",
     sort: "",
   });
-  // Applied filters used when calling the filter API
+
   const [appliedFilters, setAppliedFilters] = useState({});
 
   const location = useLocation();
   const navigate = useNavigate();
   const qp = new URLSearchParams(location.search);
   const searchQuery = qp.get("query") || "";
+  const categoryParam = qp.get("category") || "";
 
-  // Mapping from query → category key
   const keywordMap = {
     mobile: "phone",
     earphone: "headphones",
@@ -34,8 +33,6 @@ const AllProducts = () => {
     appliances: "home-appliances",
   };
 
-  // Whenever searchQuery changes and matches one of our map keys,
-  // auto-set the Category dropdown (and appliedFilters) to that key
   useEffect(() => {
     if (searchQuery) {
       const key = searchQuery.toLowerCase();
@@ -43,21 +40,22 @@ const AllProducts = () => {
         setFilters((f) => ({ ...f, category: keywordMap[key] }));
         setAppliedFilters((f) => ({ ...f, category: keywordMap[key] }));
       } else {
-        // for non-mapped searches, clear category filter
         setFilters((f) => ({ ...f, category: "" }));
         setAppliedFilters((f) => {
           const { category, ...rest } = f;
           return rest;
         });
       }
+    } else if (categoryParam) {
+      setFilters((f) => ({ ...f, category: categoryParam }));
+      setAppliedFilters((f) => ({ ...f, category: categoryParam }));
     }
-  }, [searchQuery]);
+  }, [searchQuery, categoryParam]);
 
-  // Fetch whenever searchQuery OR appliedFilters change
   useEffect(() => {
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, appliedFilters]);
+  }, [searchQuery, categoryParam, appliedFilters]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -65,26 +63,23 @@ const AllProducts = () => {
 
     try {
       let url;
-
       const qLower = searchQuery.toLowerCase();
-      // 1) If searchQuery maps to a categoryKey, use filter endpoint:
+
       if (keywordMap[qLower]) {
         const params = new URLSearchParams();
         params.append("category", keywordMap[qLower]);
-        // (you could append other appliedFilters too if needed)
         url = `http://localhost:5000/api/products/filter?${params.toString()}`;
-      }
-      // 2) Otherwise if there's any searchQuery, use search endpoint:
-      else if (searchQuery) {
+      } else if (searchQuery) {
         url = `http://localhost:5000/api/products/search?query=${encodeURIComponent(
           searchQuery
         )}`;
-      }
-      // 3) Fallback: no searchQuery → use filter endpoint with all appliedFilters
-      else {
+      } else {
         const params = new URLSearchParams();
+        if (categoryParam) {
+          params.append("category", categoryParam);
+        }
         Object.entries(appliedFilters).forEach(([k, v]) => {
-          if (v) params.append(k, v);
+          if (v && k !== "category") params.append(k, v);
         });
         url = `http://localhost:5000/api/products/filter?${params.toString()}`;
       }
@@ -98,6 +93,7 @@ const AllProducts = () => {
         }
         throw new Error(`HTTP ${res.status}`);
       }
+
       const data = await res.json();
       setProducts(data.products || []);
     } catch (err) {
@@ -115,7 +111,6 @@ const AllProducts = () => {
   const applyFilters = () => {
     setAppliedFilters(filters);
 
-    // Rebuild URL only from filters (drops any old `query`)
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([k, v]) => {
       if (v) params.append(k, v);
@@ -258,7 +253,7 @@ const AllProducts = () => {
                   />
                 </div>
                 <h3 className="text-lg font-semibold">{p.name}</h3>
-                <p className="text-gray-600">${p.price}</p>
+                <p className="text-gray-600">₹{p.price}</p>
                 <p className="text-yellow-500">⭐ {p.rating}</p>
               </div>
             ))

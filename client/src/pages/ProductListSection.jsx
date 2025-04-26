@@ -28,8 +28,8 @@ const ProductListSection = () => {
                 <h3 className="text-xl font-semibold text-gray-800">
                   {product.name}
                 </h3>
-                <p className="mt-2 text-gray-600">${product.price}</p>
-w                <div className="flex items-center mt-2 text-yellow-500">
+                <p className="mt-2 text-gray-600">₹{product.price}</p>w{" "}
+                <div className="flex items-center mt-2 text-yellow-500">
                   {Array.from({ length: fullStars }).map((_, i) => (
                     <FaStar key={i} />
                   ))}

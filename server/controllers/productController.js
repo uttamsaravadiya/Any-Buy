@@ -121,6 +121,23 @@ exports.getProductsByCategory = async (req, res) => {
   }
 };
 
+const categoryMap = {
+  "home-appliances": "Home Appliances",
+  headphones: "Headphones",
+  laptop: "Laptop",
+  "gaming-accessories": "Gaming Accessories",
+  phone: "Phone",
+  television: "Television",
+  smartwatch: "Smartwatch",
+};
+
+// Keyword mapping for better search results
+const keywordMap = {
+  mobile: "phone", // map 'mobile' to 'phone'
+  earphone: "headphones", // map 'earphone' to 'headphones'
+  // Add more mappings as needed
+};
+
 exports.searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
@@ -129,13 +146,27 @@ exports.searchProducts = async (req, res) => {
       return res.status(400).json({ message: "Search query is required" });
     }
 
-    // Improved: Case-insensitive search by name & category
-    const products = await Product.find({
-      $or: [
-        { name: { $regex: new RegExp(query, "i") } }, // 🔍 Case-insensitive name match
-        { category: { $regex: new RegExp(query, "i") } }, // 🔍 Case-insensitive category match
-      ],
-    });
+    const queryLower = query.toLowerCase();
+
+    // Check if the query matches a keyword map (like 'mobile' to 'phone')
+    const mappedCategory = keywordMap[queryLower] || queryLower;
+
+    // Check if the mapped category exists in the categoryMap
+    const matchedCategory = Object.keys(categoryMap).find(
+      (key) => key.toLowerCase() === mappedCategory
+    );
+
+    let filter = {};
+
+    if (matchedCategory) {
+      // If we have a category match, filter by the category name
+      filter.category = categoryMap[matchedCategory];
+    } else {
+      // Otherwise, perform a partial match for product name (case-insensitive)
+      filter.name = { $regex: query, $options: "i" };
+    }
+
+    const products = await Product.find(filter);
 
     if (products.length === 0) {
       return res.status(404).json({ message: "No products found" });
@@ -147,7 +178,6 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 exports.filterProducts = async (req, res) => {
   try {
     const { category, minPrice, maxPrice, minRating, condition, sort } =

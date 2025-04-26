@@ -51,7 +51,10 @@ const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                <button
+                  type="submit"
+                  className="absolute inset-y-0 left-0 pl-3 flex items-center"
+                >
                   <Search className="h-5 w-5 text-gray-400" />
                 </button>
               </form>
@@ -79,19 +82,31 @@ const Navbar = () => {
                 <div className="origin-top-right absolute right-0 mt-2 w-48 -translate-y-2 translate-x-14 rounded-md shadow-lg py-1 x- z-50 bg-rich-100 ring-1 ring-black ring-opacity-5">
                   {user ? (
                     <>
-                      <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300">
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
+                      >
                         Profile
                       </Link>
-                      <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-rich-300">
+                      <button
+                        onClick={logout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-rich-300"
+                      >
                         Logout
                       </button>
                     </>
                   ) : (
                     <>
-                      <Link to="/login" className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black">
+                      <Link
+                        to="/login"
+                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
+                      >
                         Login
                       </Link>
-                      <Link to="/register" className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black">
+                      <Link
+                        to="/register"
+                        className="block px-4 py-2 text-sm hover:bg-rich-300 bg-rich-100 text-black"
+                      >
                         Register
                       </Link>
                     </>
@@ -101,11 +116,16 @@ const Navbar = () => {
             </div>
 
             {/* Add Product Button */}
-            {user && (user.userType === "shopkeeper" || user.userType === "renowned") && (
-              <Link to="/add" className="p-2 text-gray-700 hover:text-gray-800">
-                <Plus className="h-6 w-6 ml-6" />
-              </Link>
-            )}
+            {user &&
+              (user.userType === "shopkeeper" ||
+                user.userType === "renowned") && (
+                <Link
+                  to="/add"
+                  className="p-2 text-gray-700 hover:text-gray-800"
+                >
+                  <Plus className="h-6 w-6 ml-6" />
+                </Link>
+              )}
           </div>
         </div>
       </div>

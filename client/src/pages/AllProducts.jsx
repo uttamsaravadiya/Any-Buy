@@ -5,7 +5,8 @@ const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [appliedFilters, setAppliedFilters] = useState({});
+
+  // UI state for filters
   const [filters, setFilters] = useState({
     category: "",
     minPrice: "",
@@ -14,68 +15,116 @@ const AllProducts = () => {
     condition: "",
     sort: "",
   });
+  // Applied filters used when calling the filter API
+  const [appliedFilters, setAppliedFilters] = useState({});
 
   const location = useLocation();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const category = queryParams.get("category");
-  const searchQuery = queryParams.get("query");
+  const qp = new URLSearchParams(location.search);
+  const searchQuery = qp.get("query") || "";
 
+  // Mapping from query → category key
+  const keywordMap = {
+    mobile: "phone",
+    earphone: "headphones",
+    watch: "smartwatch",
+    laptop: "laptop",
+    gaming: "gaming-accessories",
+    tv: "television",
+    appliances: "home-appliances",
+  };
+
+  // Whenever searchQuery changes and matches one of our map keys,
+  // auto-set the Category dropdown (and appliedFilters) to that key
+  useEffect(() => {
+    if (searchQuery) {
+      const key = searchQuery.toLowerCase();
+      if (keywordMap[key]) {
+        setFilters((f) => ({ ...f, category: keywordMap[key] }));
+        setAppliedFilters((f) => ({ ...f, category: keywordMap[key] }));
+      } else {
+        // for non-mapped searches, clear category filter
+        setFilters((f) => ({ ...f, category: "" }));
+        setAppliedFilters((f) => {
+          const { category, ...rest } = f;
+          return rest;
+        });
+      }
+    }
+  }, [searchQuery]);
+
+  // Fetch whenever searchQuery OR appliedFilters change
   useEffect(() => {
     fetchProducts();
-  }, [category, searchQuery, appliedFilters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, appliedFilters]);
 
   const fetchProducts = async () => {
+    setLoading(true);
+    setError(null);
+
     try {
-      let url = "http://localhost:5000/api/products/filter?";
+      let url;
 
-      if (searchQuery) {
-        url += `query=${searchQuery}&`;
+      const qLower = searchQuery.toLowerCase();
+      // 1) If searchQuery maps to a categoryKey, use filter endpoint:
+      if (keywordMap[qLower]) {
+        const params = new URLSearchParams();
+        params.append("category", keywordMap[qLower]);
+        // (you could append other appliedFilters too if needed)
+        url = `http://localhost:5000/api/products/filter?${params.toString()}`;
       }
-      if (category) {
-        url += `category=${category}&`;
+      // 2) Otherwise if there's any searchQuery, use search endpoint:
+      else if (searchQuery) {
+        url = `http://localhost:5000/api/products/search?query=${encodeURIComponent(
+          searchQuery
+        )}`;
       }
-      if (appliedFilters.minPrice) {
-        url += `minPrice=${appliedFilters.minPrice}&`;
-      }
-      if (appliedFilters.maxPrice) {
-        url += `maxPrice=${appliedFilters.maxPrice}&`;
-      }
-      if (appliedFilters.minRating) {
-        url += `minRating=${appliedFilters.minRating}&`;
-      }
-      if (appliedFilters.condition) {
-        url += `condition=${appliedFilters.condition}&`;
-      }
-      if (appliedFilters.sort) {
-        url += `sort=${appliedFilters.sort}&`;
+      // 3) Fallback: no searchQuery → use filter endpoint with all appliedFilters
+      else {
+        const params = new URLSearchParams();
+        Object.entries(appliedFilters).forEach(([k, v]) => {
+          if (v) params.append(k, v);
+        });
+        url = `http://localhost:5000/api/products/filter?${params.toString()}`;
       }
 
-      const response = await fetch(url);
-      const data = await response.json();
+      const res = await fetch(url);
+      if (!res.ok) {
+        if (res.status === 404) {
+          setProducts([]);
+          setLoading(false);
+          return;
+        }
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
       setProducts(data.products || []);
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Failed to fetch products. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
 
   const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    setFilters((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
   const applyFilters = () => {
     setAppliedFilters(filters);
+
+    // Rebuild URL only from filters (drops any old `query`)
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => {
+      if (v) params.append(k, v);
+    });
+    navigate(`/allproducts?${params.toString()}`);
   };
 
   const handleProductClick = (id) => {
-    if (!id) {
-      console.error("Product ID is undefined!");
-    } else {
-      console.log("Product clicked:", id);
-    }
+    if (!id) console.error("Product ID is undefined!");
     navigate(`/product/${id}`);
   };
 
@@ -85,17 +134,13 @@ const AllProducts = () => {
       <div className="w-1/4 bg-white p-6 rounded-2xl shadow-lg">
         <h2 className="text-xl font-bold">Filters</h2>
 
+        {/* Category */}
         <div className="mt-4">
           <label className="font-medium text-gray-700">Category</label>
           <select
             name="category"
             value={filters.category}
-            onChange={(e) => {
-              setFilters({ ...filters, category: e.target.value });
-              navigate(
-                e.target.value ? `?category=${e.target.value}` : "/allproducts"
-              );
-            }}
+            onChange={handleFilterChange}
             className="w-full p-2 border rounded-lg"
           >
             <option value="">All</option>
@@ -109,6 +154,7 @@ const AllProducts = () => {
           </select>
         </div>
 
+        {/* Price Range */}
         <div className="mt-4">
           <label className="font-medium text-gray-700">Price Range</label>
           <input
@@ -129,6 +175,7 @@ const AllProducts = () => {
           />
         </div>
 
+        {/* Minimum Rating */}
         <div className="mt-4">
           <label className="font-medium text-gray-700">Minimum Ratings</label>
           <input
@@ -143,6 +190,7 @@ const AllProducts = () => {
           />
         </div>
 
+        {/* Condition */}
         <div className="mt-4">
           <label className="font-medium text-gray-700">Condition</label>
           <select
@@ -157,6 +205,7 @@ const AllProducts = () => {
           </select>
         </div>
 
+        {/* Sort By */}
         <div className="mt-4">
           <label className="font-medium text-gray-700">Sort By</label>
           <select
@@ -171,7 +220,6 @@ const AllProducts = () => {
           </select>
         </div>
 
-        {/* **Apply Filters Button** */}
         <button
           onClick={applyFilters}
           className="mt-6 w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition"
@@ -180,12 +228,14 @@ const AllProducts = () => {
         </button>
       </div>
 
+      {/* Products */}
       <div className="w-3/4 ml-6">
-        <h2 className="text-2xl font-bold text-center">
+        <h2 className="text-2xl font-bold text-center mb-4">
           {searchQuery
             ? `Search Results for "${searchQuery}"`
-            : category
-            ? category.toUpperCase()
+            : filters.category
+            ? filters.category.charAt(0).toUpperCase() +
+              filters.category.slice(1)
             : "All Products"}
         </h2>
 
@@ -194,22 +244,22 @@ const AllProducts = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-4">
           {products.length > 0 ? (
-            products.map((product) => (
+            products.map((p) => (
               <div
-                key={product.id || product._id} // Ensure correct key
+                key={p._id || p.id}
                 className="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
-                onClick={() => handleProductClick(product.id || product._id)} // Ensure correct ID
+                onClick={() => handleProductClick(p._id || p.id)}
               >
                 <div className="w-full h-60 mb-4 rounded-md overflow-hidden">
                   <img
-                    src={`http://localhost:5000/${product.image}`}
-                    alt={product.name}
-                    className=" h-full object-contain w-full" 
+                    src={`http://localhost:5000/${p.image}`}
+                    alt={p.name}
+                    className="h-full object-contain w-full"
                   />
                 </div>
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-gray-600">${product.price}</p>
-                <p className="text-yellow-500">⭐ {product.rating}</p>
+                <h3 className="text-lg font-semibold">{p.name}</h3>
+                <p className="text-gray-600">${p.price}</p>
+                <p className="text-yellow-500">⭐ {p.rating}</p>
               </div>
             ))
           ) : (

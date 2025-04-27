@@ -25,7 +25,7 @@ const AdminOrders = () => {
 
   return (
     <div className="flex h-screen">
-      <main className="flex-1 p-10 bg-gray-100">
+      <main className="flex-1 p-10 ">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">All Orders</h2>
           <div className="flex items-center gap-4">

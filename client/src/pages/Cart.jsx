@@ -109,7 +109,7 @@ const Cart = () => {
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.product?.name}</h3>
                 <p className="text-gray-600">
-                  ${item.product?.price.toFixed(2)}
+                  ₹{item.product?.price.toFixed(2)}
                 </p>
               </div>
               <div className="flex items-center">
@@ -138,7 +138,7 @@ const Cart = () => {
 
           <div className="mt-6 text-right">
             <h3 className="text-xl font-bold">
-              Total: ${totalAmount.toFixed(2)}
+              Total: ₹{totalAmount.toFixed(2)}
             </h3>
             <button
               onClick={(e) => {

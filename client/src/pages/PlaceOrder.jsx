@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
   const [formData, setFormData] = useState({
@@ -15,23 +17,71 @@ const PlaceOrder = () => {
     giftOption: false,
     billingSame: true,
   });
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setError(null);
+
+    // 1) grab cart from localStorage
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart.length === 0) {
+      setError("Your cart is empty.");
+      return;
+    }
+
+    // 2) build Stripe line items (price in cents, INR)
+    const items = cart.map((item) => {
+      const priceInCents = !isNaN(item.price)
+        ? Math.round(item.price * 100)
+        : 0;
+
+      return {
+        name: item.name,
+        amount: priceInCents, // price in paisa
+        quantity: item.quantity,
+        currency: "inr", // Currency set to INR
+      };
+    });
+
+    // Check if any item has an invalid price
+    if (items.some((item) => item.amount === 0)) {
+      setError("One or more items have invalid prices.");
+      return;
+    }
+
+    try {
+      // 3) call backend to create Checkout Session
+      const { data } = await axios.post(
+        "http://localhost:5000/api/payments/create-checkout-session", // API URL
+        { items }
+      );
+
+      // 4) redirect browser to Stripe Checkout
+      window.location.assign(data.url);
+    } catch (err) {
+      const msg =
+        err.response?.data?.error || err.response?.data?.details || err.message;
+      console.error("Checkout session error:", msg);
+      setError(msg);
+    }
   };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
       <h2 className="text-2xl font-bold mb-4">Checkout</h2>
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Gift Option */}
         <div className="flex items-center">

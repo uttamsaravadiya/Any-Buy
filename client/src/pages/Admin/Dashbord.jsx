@@ -8,14 +8,14 @@ import UsersTable from "../../components/Admin/UsersTable";
 
 const Dashboard = () => {
   return (
-    <div className="grid grid-cols-6 p-0">
+    <div className="w-full p-0">
       {/* Sidebar always visible */}
-      <div className="col-span-1">
+      <div className="w-[30%]">
         <Sidebar />
       </div>
-      
+
       {/* Main Content Area */}
-      <main className="p-10 bg-gray-100 col-span-5">
+      <main className="py-10  w-[70%] ml-[25%]">
         <Routes>
           <Route path="/" element={<ProductTable />} />
           <Route path="orders" element={<AdminOrders />} />

@@ -64,7 +64,7 @@ const CategoriesTable = () => {
 
   if (selectedCategory) {
     return (
-      <div className="p-10 bg-gray-100 min-h-screen">
+      <div className="p-10  min-h-screen">
         <button onClick={handleBack} className="mb-5 text-blue-500 underline">
           ← Back to Categories
         </button>
@@ -129,7 +129,7 @@ const CategoriesTable = () => {
 
   const entries = Object.entries(categoryMap);
   return (
-    <div className="p-10 bg-gray-100 min-h-screen">
+    <div className="p-10  min-h-screen">
       <h2 className="text-2xl font-semibold text-center mb-5">
         All Categories
       </h2>

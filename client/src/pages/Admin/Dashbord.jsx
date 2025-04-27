@@ -8,11 +8,14 @@ import UsersTable from "../../components/Admin/UsersTable";
 
 const Dashboard = () => {
   return (
-    <div className="flex h-screen">
+    <div className="grid grid-cols-6 p-0">
       {/* Sidebar always visible */}
-      <Sidebar />
+      <div className="col-span-1">
+        <Sidebar />
+      </div>
+      
       {/* Main Content Area */}
-      <main className="flex-1 p-10 bg-gray-100">
+      <main className="p-10 bg-gray-100 col-span-5">
         <Routes>
           <Route path="/" element={<ProductTable />} />
           <Route path="orders" element={<AdminOrders />} />

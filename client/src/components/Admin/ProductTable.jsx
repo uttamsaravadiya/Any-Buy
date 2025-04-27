@@ -54,7 +54,7 @@ const ProductTable = () => {
   if (error) return <div className="p-5 text-red-500">{error}</div>;
 
   return (
-    <div className="relative bg-white p-5 shadow-md rounded-lg min-h-screen">
+    <div className=" bg-white p-5 shadow-md rounded-lg min-h-screen">
       <table className="w-full">
         <thead>
           <tr className="border-b">

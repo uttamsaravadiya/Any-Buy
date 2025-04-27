@@ -4,14 +4,14 @@ import {
   FaTachometerAlt,
   FaThList,
   FaUsers,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 bg-blue-500 text-white p-5 h-full">
-      <h1 className="text-2xl font-bold">Any-Buy</h1>
-      <p className="text-xs">ELECTRONIC ECOMMERCE</p>
+    <>
+      <aside className="fixed w-64 bg-blue-500 text-white p-5 h-full">
       <nav className="mt-5">
         <ul className="space-y-4">
           <li>
@@ -37,6 +37,8 @@ const Sidebar = () => {
         </ul>
       </nav>
     </aside>
+    </>
+    
   );
 };
 

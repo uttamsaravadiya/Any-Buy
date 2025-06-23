@@ -1,8 +1,6 @@
-import Stripe from "stripe";
-// import Order from "../models/Order.js";
-// import userModel from "../models/userModel.js";
-const Order = "../models/Order.js";
-const User = "../models/User.js";
+const Stripe = require("stripe");
+const Order = require("../models/Order.js");
+const User = require("../models/User.js");
 
 //Gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -10,14 +8,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //COD
 const placeOrder = async (req, res) => {
   try {
-    const { userId, items, amount, address } = req.body;
+    const { userId,items, amount, address } = req.body;
+    // const { userId } = req.userId;
 
     const orderData = {
       userId,
       items,
       amount,
       address,
-      paymentMethod: "Cash On Delivery",
+      paymentMethod: "COD",
       payment: false,
       date: Date.now(),
     };
@@ -29,7 +28,7 @@ const placeOrder = async (req, res) => {
     res.json({ success: true, message: "Order Placed Successfully" });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
 
@@ -142,7 +141,7 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-export {
+module.exports = {
   allOrders,
   placeOrder,
   placeOrderRazorpay,

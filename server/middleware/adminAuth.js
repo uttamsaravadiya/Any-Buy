@@ -1,5 +1,5 @@
-import "dotenv/config";
-import jwt from "jsonwebtoken";
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const adminAuth = async (req, res, next) => {
   try {
@@ -9,9 +9,6 @@ const adminAuth = async (req, res, next) => {
     }
 
     const token_decode = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(token);
-    // console.log(token_decode);
-    // console.log(process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD);
 
     if (
       token_decode.id !=
@@ -26,4 +23,4 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
-export default adminAuth;
+module.exports = adminAuth;

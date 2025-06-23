@@ -1,8 +1,76 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+// Helper to get userId from backend or cookie (adjust as needed)
+const getUserId = async () => {
+  // Fallback: get userId from localStorage if you store it after login
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user && user._id ? user._id : null;
+};
 
 const PlaceOrder = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [userId, setUserId] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Fetch userId and cart from backend
+  useEffect(() => {
+    const fetchCart = async () => {
+      setLoading(true);
+      const uid = await getUserId();
+      setUserId(uid);
+      if (!uid) {
+        setLoading(false);
+        return;
+      }
+      try {
+        // Remove withCredentials for debugging if your backend does not require cookies for /api/cart/:userId
+        // Or, if your backend requires authentication, ensure you are logged in and the cookie is present
+
+        // Try fetching cart without withCredentials (for public cart endpoint)
+        let cartRes;
+        try {
+          cartRes = await axios.get(`http://localhost:5000/api/cart/${uid}`);
+        } catch (err) {
+          // If fails, try with credentials (for authenticated cart endpoint)
+          cartRes = await axios.get(`http://localhost:5000/api/cart/${uid}`, {
+            withCredentials: true,
+          });
+        }
+
+        // Debug: log cart response
+        console.log("Cart API response:", cartRes.data);
+
+        // Defensive: check if cartRes.data.cart is an array and has items with quantity > 0
+        if (
+          Array.isArray(cartRes.data.cart) &&
+          cartRes.data.cart.some((item) => item.quantity > 0)
+        ) {
+          setCartItems(cartRes.data.cart);
+        } else {
+          setCartItems([]);
+          console.warn("Cart is empty or all items have quantity 0.");
+        }
+      } catch (err) {
+        // Debug: log error
+        console.error("Cart fetch error:", err);
+        setCartItems([]);
+      }
+      setLoading(false);
+    };
+    fetchCart();
+  }, []);
+
+  // Calculate total
+  const getCartTotal = (orderItems) => {
+    return orderItems.reduce(
+      (total, item) => total + (item.price || 0) * (item.quantity || 0),
+      0
+    );
+  };
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -30,51 +98,62 @@ const PlaceOrder = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
-    // 1) grab cart from localStorage
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (cart.length === 0) {
-      setError("Your cart is empty.");
-      return;
-    }
-
-    // 2) build Stripe line items (price in cents, INR)
-    const items = cart.map((item) => {
-      const priceInCents = !isNaN(item.price)
-        ? Math.round(item.price * 100)
-        : 0;
-
-      return {
-        name: item.name,
-        amount: priceInCents, // price in paisa
-        quantity: item.quantity,
-        currency: "inr", // Currency set to INR
-      };
-    });
-
-    // Check if any item has an invalid price
-    if (items.some((item) => item.amount === 0)) {
-      setError("One or more items have invalid prices.");
-      return;
-    }
 
     try {
-      // 3) call backend to create Checkout Session
-      const { data } = await axios.post(
-        "http://localhost:5000/api/payments/create-checkout-session", // API URL
-        { items }
-      );
+      // Build orderItems as expected by backend
+      const orderItems = cartItems.map((item) => ({
+        productId: item.product._id,
+        quantity: item.quantity,
+        price: item.product.price,
+      }));
 
-      // 4) redirect browser to Stripe Checkout
-      window.location.assign(data.url);
-    } catch (err) {
-      const msg =
-        err.response?.data?.error || err.response?.data?.details || err.message;
-      console.error("Checkout session error:", msg);
-      setError(msg);
+      // Build address string (adjust as needed)
+      const addressString = [
+        formData.address,
+        formData.apartment,
+        formData.city,
+        formData.state,
+        formData.zip,
+      ]
+        .filter(Boolean)
+        .join(", ");
+
+      const orderData = {
+        userId,
+        items: orderItems,
+        amount: getCartTotal(orderItems),
+        address: addressString,
+      };
+
+      const result = await axios.post(
+        "http://localhost:5000/api/order/placeorder",
+        orderData,
+        { withCredentials: true }
+      );
+      console.log(result.data);
+
+      // Optionally, clear cart and redirect
+      // navigate("/order-success");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      setError("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again.");
     }
   };
+
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
+
+  if (!cartItems.length || !cartItems.some((item) => item.quantity > 0)) {
+    // Debug: log cartItems for troubleshooting
+    console.log("cartItems at render:", cartItems);
+    return (
+      <div className="text-red-600 text-center mt-10">
+        Cart not available. Please add items to cart.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
